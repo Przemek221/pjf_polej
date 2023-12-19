@@ -9,7 +9,7 @@ from django.http import HttpResponse
 
 from django.views.generic import ListView
 from .models import Something
-from .models import User
+from .models import Post
 from .forms import addUserForm
 
 
@@ -25,23 +25,23 @@ class loginPage(ListView):
 
 class registerPage(ListView):
     # model = Something
-    model = User
+    # model = User
     template_name = "sampleApp/register.html"
 
 
-def addusr(request):
-    if request.method == 'POST':
-        form = addUserForm(request.POST)
-        # nickname = request.POST['nickname']
-        # User.objects.create(nickname=form.nickname,password=form.password,role=User.Roles.USER)
-        # password = request.POST['passwd']
-        # if form.is_valid(addUserForm):
-        ysr = User(nickname=form.nickname, password=form.password, role=User.Roles.USER)
-        ysr.save()
-    else:
-        form = addUserForm()
-
-    return render(request, 'sampleApp/register.html', {"form": form})
+# def addusr(request):
+#     if request.method == 'POST':
+#         form = addUserForm(request.POST)
+#         # nickname = request.POST['nickname']
+#         # User.objects.create(nickname=form.nickname,password=form.password,role=User.Roles.USER)
+#         # password = request.POST['passwd']
+#         # if form.is_valid(addUserForm):
+#         ysr = User(nickname=form.nickname, password=form.password, role=User.Roles.USER)
+#         ysr.save()
+#     else:
+#         form = addUserForm()
+#
+#     return render(request, 'sampleApp/register.html', {"form": form})
 
 
 # argument dla fcji, dla strony index html
@@ -56,6 +56,14 @@ def xxx(request):
         'object_list': sth
     }
     return render(request, 'sampleApp/index.html', arg)
+
+
+def displayPosts(request):
+    arg = {
+        'title': 'abc',
+        'posts': Post.objects.all()
+    }
+    return render(request, 'sampleApp/posts.html', arg)
 
 
 def przyklkad(request):

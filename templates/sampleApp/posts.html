@@ -1,0 +1,16 @@
+{% extends "sampleApp/base.html" %}
+{% block content %}
+    <h1>Posts:</h1>
+    <div>
+        {% for item in posts %}
+            <h3>Creator: {{ item.creator }}</h3>
+            <p>Created date: {{ item.createdDate|date:"d M y H:i" }}</p>
+            <br>
+            <p>Content <br>{{ item.content }}</p>
+
+        {% endfor %}
+    </div>
+
+
+    <a href="{% url 'login' %}">jakis link - login</a>
+{% endblock content %}
