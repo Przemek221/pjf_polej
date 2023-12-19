@@ -1,4 +1,7 @@
 from django.db import models
+# from django.contrib.auth.models import AbstractUser
+# from django.contrib.auth.models import AbstractBaseUser
+# from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -17,13 +20,13 @@ class User(models.Model):
         MODERATOR = "mod", "moderator"
         ADMIN = "adm", "admin"
 
-    nickname = models.CharField(
-        max_length=30,
-        unique=True
-    )
-    password = models.CharField(
-        max_length=30
-    )
+    # nickname = models.CharField(
+    #     max_length=30,
+    #     unique=True
+    # )
+    # password = models.CharField(
+    #     max_length=30
+    # )
     role = models.CharField(
         max_length=3,
         choices=Roles.choices,
@@ -50,12 +53,10 @@ class Comment(models.Model):
     relatedPost = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 
-
 class Message(models.Model):
     content = models.TextField
     date = models.DateTimeField
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
-
 
 
 class MessageAttachment(models.Model):

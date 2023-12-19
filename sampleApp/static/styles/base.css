@@ -1,0 +1,21 @@
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.58);
+}
+#content-wrapper{
+    width: 90%;
+    height: 90%;
+    margin: auto;
+    background: rgb(255 255 255 / 80%);
+    /*background: rgba(253, 0, 0, 0.4);*/
+}
