@@ -1,20 +1,25 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Register</title>
-</head>
-<body>
+{% extends "sampleApp/base.html" %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href=" {% static 'styles/register.css' %} ">
+{% endblock %}
+{% block content %}
+    <h1>Register User</h1>
+    <div>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_div }}
+            <input type="submit" value="Register">
+        </form>
+        <div class="errors">
+            {% for field, error in form.errors.items %}
+                <div class="error_element">
+                    {{ error|striptags }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
-<div class="form-wrapper">
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Register">
-    </form>
-</div>
-</body>
-</html>
+
+    <a href="{% url 'login' %}">jakis link - login</a>
+{% endblock content %}

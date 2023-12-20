@@ -1,0 +1,13 @@
+.errorlist {
+    display: none;
+}
+#content-wrapper>div{
+    display: grid;
+    grid-template-columns: 60% 40%;
+}
+.error_element{
+    background:white;
+    text-align:center;
+    border:1px solid red;
+    border-radius:4px;
+}
