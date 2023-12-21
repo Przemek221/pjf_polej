@@ -11,6 +11,7 @@ from django.views.generic import ListView
 from .models import Something
 from .models import Post
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .forms import RegisterUserForm
 
 
@@ -21,9 +22,19 @@ class AllToDos(ListView):
     template_name = "sampleApp/index.html"
 
 
-class loginPage(ListView):
-    model = Something
-    template_name = "sampleApp/login.html"
+# class loginPage(ListView):
+#     model = Something
+#     template_name = "sampleApp/login.html"
+
+
+# class LoginView(ListView):
+#     model = Post
+#     template_name = "sampleApp/login.html"
+
+
+class LogoutView(ListView):
+    model = Post
+    template_name = "sampleApp/index.html"
 
 
 # class registerPage(ListView):
@@ -83,7 +94,12 @@ def registerUser(request):
             form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f"User {username} registered")
-            return redirect('index')
+            return redirect('login')
     else:
         form = RegisterUserForm()
     return render(request, 'sampleApp/register.html', {'form': form, 'title': 'register'})
+
+
+@login_required
+def profile(request):
+    return render(request, 'sampleApp/profile.html')

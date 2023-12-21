@@ -1,0 +1,10 @@
+
+
+{% extends "sampleApp/base.html" %}
+{% load static %}
+{% block head %}
+    {#    <link rel="stylesheet" href=" {% static 'styles/register.css' %} ">#}
+{% endblock %}
+{% block content %}
+    <p>{{ user.username }} {# dont need to pass user as an arg. #} </p>
+{% endblock content %}
