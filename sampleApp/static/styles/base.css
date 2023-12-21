@@ -9,13 +9,23 @@ body {
     margin: 0;
     overflow: auto;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     background: rgba(0, 0, 0, 0.58);
 }
-#content-wrapper{
+
+.nav-bar {
+    display: flex;
+    flex-direction: row;
+    column-gap: 30px;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+#content-wrapper {
     width: 90%;
-    height: 90%;
+    /*height: 90%;*/
     margin: auto;
     background: rgb(255 255 255 / 80%);
-    /*background: rgba(253, 0, 0, 0.4);*/
+    padding: 15px;
 }

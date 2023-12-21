@@ -78,7 +78,7 @@ def displayPosts(request):
         'title': 'abc',
         'posts': Post.objects.all()
     }
-    return render(request, 'sampleApp/posts.html', arg)
+    return render(request, 'sampleApp/home.html', arg)
 
 
 # def przyklkad(request):

@@ -1,0 +1,8 @@
+.profile-picture{
+    max-width: 100px;
+}
+
+.wrapper{
+    display: grid;
+    grid-template-columns: 70% 30%;
+}

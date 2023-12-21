@@ -14,24 +14,12 @@ class Something(models.Model):
         return f"num: {self.number} | desc: {self.desc}"
 
 
-# class User(models.Model):
-#     class Roles(models.TextChoices):
-#         USER = "usr", "user"
-#         MODERATOR = "mod", "moderator"
-#         ADMIN = "adm", "admin"
-#
-#     # nickname = models.CharField(
-#     #     max_length=30,
-#     #     unique=True
-#     # )
-#     # password = models.CharField(
-#     #     max_length=30
-#     # )
-#     role = models.CharField(
-#         max_length=3,
-#         choices=Roles.choices,
-#         default=Roles.USER,
-#     )
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profile_images')
+
+    def __str__(self):
+        return f"Profile of the user: {self.user.username}"
 
 
 class Post(models.Model):
@@ -42,7 +30,6 @@ class Post(models.Model):
 
     def __str__(self):
         return f"content: {self.content} | creator: {self.creator}"
-
 
 # class PostAttachment(models.Model):
 #     content = models.FileField

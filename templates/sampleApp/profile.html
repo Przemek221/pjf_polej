@@ -3,8 +3,17 @@
 {% extends "sampleApp/base.html" %}
 {% load static %}
 {% block head %}
-    {#    <link rel="stylesheet" href=" {% static 'styles/register.css' %} ">#}
+    <link rel="stylesheet" href=" {% static 'styles/profile.css' %} ">
 {% endblock %}
 {% block content %}
-    <p>{{ user.username }} {# dont need to pass user as an arg. #} </p>
+    <div class="wrapper">
+        <div>
+            <p>username: {{ user.username }} {# dont need to pass user as an arg. #} </p>
+            <p>user email: {{ user.email }}</p>
+            <img src="{{ user.userprofile.image.url }}" alt="usr img" class="profile-picture">
+        </div>
+        <div>
+            settings etc.
+        </div>
+    </div>
 {% endblock content %}
