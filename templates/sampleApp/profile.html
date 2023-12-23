@@ -13,7 +13,12 @@
             <img src="{{ user.userprofile.image.url }}" alt="usr img" class="profile-picture">
         </div>
         <div>
-            settings etc.
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ update_user_form.as_div }}
+                {{ update_profile_form.as_div }}
+                <input type="submit" value="Save changes">
+            </form>
         </div>
     </div>
 {% endblock content %}

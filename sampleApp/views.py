@@ -12,7 +12,7 @@ from .models import Something
 from .models import Post
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterUserForm
+from .forms import RegisterUserForm, UpdateUserForm, UpdateProfileForm
 
 
 # from django.contrib.auth.forms import UserCreationForm
@@ -102,4 +102,21 @@ def registerUser(request):
 
 @login_required
 def profile(request):
-    return render(request, 'sampleApp/profile.html')
+    if request.method == 'POST':
+        update_user_form = UpdateUserForm(request.POST, instance=request.user)
+        update_profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
+        if update_profile_form.is_valid() and update_user_form.is_valid():
+            update_user_form.save()
+            update_profile_form.save()
+            messages.success(request, f"Profile updated")
+            return redirect('profile')
+
+    else:
+        update_user_form = UpdateUserForm(instance=request.user)
+        update_profile_form = UpdateProfileForm(instance=request.user.userprofile)
+
+    arg = {
+        'update_user_form': update_user_form,
+        'update_profile_form': update_profile_form
+    }
+    return render(request, 'sampleApp/profile.html', arg)
