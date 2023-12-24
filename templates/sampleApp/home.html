@@ -3,12 +3,14 @@
     <h1>Posts:</h1>
     <div>
         {% for item in posts %}
-            <h3>Creator: {{ item.creator }}</h3>
-            <p>Creator-img: <img src="{{ item.creator.userprofile.image.url }}" alt=""></p>
-            <p>Created date: {{ item.createdDate|date:"d M y H:i" }}</p>
-            <br>
-            <p>Content <br>{{ item.content }}</p>
-
+            <div>
+                <a href="{% url 'post-detail' item.id %}">details</a>
+                <h3>Creator: {{ item.creator }}</h3>
+                <p>Creator-img: <img src="{{ item.creator.userprofile.image.url }}" alt=""></p>
+                <p>Created date: {{ item.createdDate|date:"d M y H:i" }}</p>
+                <br>
+                <p>Content <br>{{ item.content }}</p>
+            </div>
         {% endfor %}
     </div>
 

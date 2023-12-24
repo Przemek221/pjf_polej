@@ -7,7 +7,20 @@ urlpatterns = [
     # path('', views.AllToDos.as_view(), name='index'),
     path('', views.xxx, name='index'),
     path('profile', views.profile, name='profile'),
-    path('home', views.displayPosts, name='home'),
+    # path('home', views.displayPosts, name='home'),
+    path('home', views.DisplayPosts.as_view(), name='home'),
+
+
+    # pk is the primary key of the current post, "int:" says that it can only contain an integer
+    # path('post/<int:pk>/', views.PostDetails.as_view(), name='post-detail'),
+
+
+    path('post-det/<int:post_id>/', views.postDetails, name='post-detail'),
+
+
+    path('post/new/', views.CreatePost.as_view(), name='post-create'),
+
+
     # path('login', views.loginPage.as_view(), name='login'),
     path('login', auth_views.LoginView.as_view(template_name="sampleApp/login.html"), name='login'),
     path('logout', auth_views.LogoutView.as_view(template_name="sampleApp/logout.html"), name='logout'),

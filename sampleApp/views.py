@@ -7,12 +7,13 @@ from django.http import HttpResponse
 #     return HttpResponse("Hello, world. You're at the polls index.")
 
 
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView, CreateView
 from .models import Something
 from .models import Post
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterUserForm, UpdateUserForm, UpdateProfileForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # from django.contrib.auth.forms import UserCreationForm
@@ -20,42 +21,6 @@ from .forms import RegisterUserForm, UpdateUserForm, UpdateProfileForm
 class AllToDos(ListView):
     model = Something
     template_name = "sampleApp/index.html"
-
-
-# class loginPage(ListView):
-#     model = Something
-#     template_name = "sampleApp/login.html"
-
-
-# class LoginView(ListView):
-#     model = Post
-#     template_name = "sampleApp/login.html"
-
-
-class LogoutView(ListView):
-    model = Post
-    template_name = "sampleApp/index.html"
-
-
-# class registerPage(ListView):
-# model = Something
-# model = User
-# template_name = "sampleApp/register.html"
-
-
-# def addusr(request):
-#     if request.method == 'POST':
-#         form = addUserForm(request.POST)
-#         # nickname = request.POST['nickname']
-#         # User.objects.create(nickname=form.nickname,password=form.password,role=User.Roles.USER)
-#         # password = request.POST['passwd']
-#         # if form.is_valid(addUserForm):
-#         ysr = User(nickname=form.nickname, password=form.password, role=User.Roles.USER)
-#         ysr.save()
-#     else:
-#         form = addUserForm()
-#
-#     return render(request, 'sampleApp/register.html', {"form": form})
 
 
 # argument dla fcji, dla strony index html
@@ -80,6 +45,37 @@ def displayPosts(request):
     }
     return render(request, 'sampleApp/home.html', arg)
 
+
+class DisplayPosts(ListView):
+    model = Post
+    # by default template name is: appName/modelName_viewType
+    template_name = 'sampleApp/home.html'
+    context_object_name = 'posts'
+    ordering = ['-createdDate']
+
+
+class PostDetails(DetailView):
+    model = Post
+
+
+# to implement post details with comments section,
+# it will be easier to use the function based view
+
+def postDetails(request, post_id):
+    arg = {
+        'object': Post.objects.get(id=post_id)
+    }
+    return render(request, 'sampleApp/post_detail.html', arg)
+
+
+class CreatePost(LoginRequiredMixin, CreateView):
+    model = Post
+    fields = ['content']
+
+    def form_valid(self, form):
+        # assigning creator before validation
+        form.instance.creator = self.request.user
+        return super().form_valid(form)
 
 # def przyklkad(request):
 #     argument = {'klucz': "wartosc"}

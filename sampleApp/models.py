@@ -3,7 +3,7 @@ from django.db import models
 # from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import User
 from PIL import Image
-
+from django.urls import reverse
 
 # Create your models here.
 
@@ -39,6 +39,8 @@ class Post(models.Model):
 
     def __str__(self):
         return f"content: {self.content} | creator: {self.creator}"
+    def get_absolute_url(self):
+        return reverse('post-detail', kwargs={'post_id': self.id})
 
 # class PostAttachment(models.Model):
 #     content = models.FileField

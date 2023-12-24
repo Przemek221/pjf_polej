@@ -1,0 +1,16 @@
+{% extends "sampleApp/base.html" %}
+{% block content %}
+    <h1>Posts:</h1>
+    <div>
+
+        <h3>Creator: {{ object.creator }}</h3>
+        <p>Creator-img: <img src="{{ object.creator.userprofile.image.url }}" alt=""></p>
+        <p>Created date: {{ object.createdDate|date:"d M y H:i" }}</p>
+        <p>Content: </p>
+        <p>{{ object.content }}</p>
+    </div>
+
+{#    need to add some comments here#}
+
+    <a href="{% url 'login' %}">jakis link - login</a>
+{% endblock content %}
