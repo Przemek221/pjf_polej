@@ -7,13 +7,13 @@ from django.http import HttpResponse
 #     return HttpResponse("Hello, world. You're at the polls index.")
 
 
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Something
 from .models import Post
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterUserForm, UpdateUserForm, UpdateProfileForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 # from django.contrib.auth.forms import UserCreationForm
@@ -76,6 +76,29 @@ class CreatePost(LoginRequiredMixin, CreateView):
         # assigning creator before validation
         form.instance.creator = self.request.user
         return super().form_valid(form)
+
+
+class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    fields = ['content']
+
+    def form_valid(self, form):
+        # assigning creator before validation
+        form.instance.creator = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.creator
+
+
+class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    success_url = '/../home'
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.creator
 
 # def przyklkad(request):
 #     argument = {'klucz': "wartosc"}

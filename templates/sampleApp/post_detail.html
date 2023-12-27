@@ -10,7 +10,12 @@
         <p>{{ object.content }}</p>
     </div>
 
-{#    need to add some comments here#}
+    <div><h3>comment section</h3></div>
 
     <a href="{% url 'login' %}">jakis link - login</a>
+    {% if object.creator == user %}
+
+    <a href="{% url 'post-delete' object.id %}">post delete</a>
+    <a href="{% url 'post-update' object.id %}">post update</a>
+    {% endif %}
 {% endblock content %}

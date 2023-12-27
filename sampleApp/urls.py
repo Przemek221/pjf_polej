@@ -20,6 +20,11 @@ urlpatterns = [
 
     path('post/new/', views.CreatePost.as_view(), name='post-create'),
 
+    # variable must be caled "pk" in this template
+    path('post-det/<int:pk>/update/', views.UpdatePost.as_view(), name='post-update'),
+
+    path('post-det/<int:pk>/delete/', views.PostDelete.as_view(), name='post-delete'),
+
 
     # path('login', views.loginPage.as_view(), name='login'),
     path('login', auth_views.LoginView.as_view(template_name="sampleApp/login.html"), name='login'),
