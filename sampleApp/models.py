@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from PIL import Image
 from django.urls import reverse
 
+
 # Create your models here.
 
 class Something(models.Model):
@@ -22,8 +23,8 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"Profile of the user: {self.user.username}"
 
-    def save(self):
-        super().save()
+    def save(self, **kwargs):
+        super().save(**kwargs)
 
         img = Image.open(self.image.path)
         if img.height > 300 or img.width > 300:
@@ -39,6 +40,7 @@ class Post(models.Model):
 
     def __str__(self):
         return f"content: {self.content} | creator: {self.creator}"
+
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'post_id': self.id})
 

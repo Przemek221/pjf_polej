@@ -2,8 +2,7 @@
 {% block content %}
     <h1>Posts:</h1>
     <div>
-
-        <h3>Creator: {{ object.creator }}</h3>
+        <h3>Creator: <a href="{% url 'user-posts' object.creator.username %}">{{ object.creator }}</a></h3>
         <p>Creator-img: <img src="{{ object.creator.userprofile.image.url }}" alt=""></p>
         <p>Created date: {{ object.createdDate|date:"d M y H:i" }}</p>
         <p>Content: </p>
@@ -15,7 +14,7 @@
     <a href="{% url 'login' %}">jakis link - login</a>
     {% if object.creator == user %}
 
-    <a href="{% url 'post-delete' object.id %}">post delete</a>
-    <a href="{% url 'post-update' object.id %}">post update</a>
+        <a href="{% url 'post-delete' object.id %}">post delete</a>
+        <a href="{% url 'post-update' object.id %}">post update</a>
     {% endif %}
 {% endblock content %}

@@ -1,6 +1,6 @@
 {% extends "sampleApp/base.html" %}
 {% block content %}
-    <h1>Posts:</h1>
+    <h1>{{ view.kwargs.username }} posts:</h1>
     <div>
         {% for item in posts %}
             <div>

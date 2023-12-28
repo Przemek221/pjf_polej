@@ -25,6 +25,7 @@ urlpatterns = [
 
     path('post-det/<int:pk>/delete/', views.PostDelete.as_view(), name='post-delete'),
 
+    path('user/<str:username>/', views.DisplayUsersPosts.as_view(), name='user-posts'),
 
     # path('login', views.loginPage.as_view(), name='login'),
     path('login', auth_views.LoginView.as_view(template_name="sampleApp/login.html"), name='login'),

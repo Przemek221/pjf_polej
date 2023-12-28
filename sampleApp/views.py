@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from django.http import HttpResponse
@@ -12,6 +12,7 @@ from .models import Something
 from .models import Post
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from .forms import RegisterUserForm, UpdateUserForm, UpdateProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -52,6 +53,18 @@ class DisplayPosts(ListView):
     template_name = 'sampleApp/home.html'
     context_object_name = 'posts'
     ordering = ['-createdDate']
+    paginate_by = 10
+
+
+class DisplayUsersPosts(ListView):
+    model = Post
+    # by default template name is: appName/modelName_viewType
+    template_name = 'sampleApp/user_posts.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+    def get_queryset(self):
+        user=get_object_or_404(User,username=self.kwargs.get('username'))
+        return Post.objects.filter(creator=user).order_by('-createdDate')
 
 
 class PostDetails(DetailView):
@@ -99,6 +112,7 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.creator
+
 
 # def przyklkad(request):
 #     argument = {'klucz': "wartosc"}
