@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 
 # def index(request):
 #     return HttpResponse("Hello, world. You're at the polls index.")
@@ -44,6 +45,7 @@ def displayPosts(request):
         'title': 'abc',
         'posts': Post.objects.all()
     }
+
     return render(request, 'sampleApp/home.html', arg)
 
 
@@ -55,6 +57,25 @@ class DisplayPosts(ListView):
     ordering = ['-createdDate']
     paginate_by = 10
 
+    # def post_is_liked(self, post_id):
+    #     likes_connected = get_object_or_404(Post, id=post_id)
+    #     liked = False
+    #     if likes_connected.likes.filter(id=self.request.user.id).exists():
+    #         liked = True
+    #     return liked
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        # likes_connected = get_object_or_404(Post, id=self.kwargs['pk'])
+        # data['post_is_liked'] = {}
+        # for item in Post.objects.all():
+        # for item in data['object_list']:
+        #     data['post_is_liked'].update({f"{item.id}": self.post_is_liked(item.id)})
+            # data['post_is_liked'].append(self.post_is_liked(item.id))
+
+        return data
+
 
 class DisplayUsersPosts(ListView):
     model = Post
@@ -62,17 +83,30 @@ class DisplayUsersPosts(ListView):
     template_name = 'sampleApp/user_posts.html'
     context_object_name = 'posts'
     paginate_by = 10
+
     def get_queryset(self):
-        user=get_object_or_404(User,username=self.kwargs.get('username'))
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
         return Post.objects.filter(creator=user).order_by('-createdDate')
+
+
+def post_like(request, pk):
+    # post_id is taken from the form (it's a button value)
+    post = get_object_or_404(Post, id=request.POST.get('post_id'))
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+
+    # return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
+    # return HttpResponseRedirect(reverse(request.POST.get('next'), args=[str(pk)]))
+    return HttpResponseRedirect(request.POST.get('next'))
 
 
 class PostDetails(DetailView):
     model = Post
 
 
-# to implement post details with comments section,
-# it will be easier to use the function based view
+
 
 def postDetails(request, post_id):
     arg = {

@@ -12,13 +12,16 @@ urlpatterns = [
 
 
     # pk is the primary key of the current post, "int:" says that it can only contain an integer
-    # path('post/<int:pk>/', views.PostDetails.as_view(), name='post-detail'),
+    path('post/<int:pk>/', views.PostDetails.as_view(), name='post-detail'),
 
 
-    path('post-det/<int:post_id>/', views.postDetails, name='post-detail'),
+    # path('post-det/<int:post_id>/', views.postDetails, name='post-detail'),
 
 
     path('post/new/', views.CreatePost.as_view(), name='post-create'),
+
+
+    path('post-like/<int:pk>', views.post_like, name="post-like"),
 
     # variable must be caled "pk" in this template
     path('post-det/<int:pk>/update/', views.UpdatePost.as_view(), name='post-update'),

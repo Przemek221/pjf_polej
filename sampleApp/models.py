@@ -35,7 +35,8 @@ class UserProfile(models.Model):
 class Post(models.Model):
     content = models.TextField()
     createdDate = models.DateTimeField(auto_now_add=True)
-    reactionCounter = models.IntegerField(default=0)
+    # reactionCounter = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, default=None, blank=True, related_name='post_like')
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -43,6 +44,9 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'post_id': self.id})
+
+    def number_of_likes(self):
+        return self.likes.count()
 
 # class PostAttachment(models.Model):
 #     content = models.FileField

@@ -2,15 +2,17 @@
 {% block content %}
     <h1>Posts:</h1>
     <div>
-        {% for item in posts %}
+        {% for object in posts %}
             <div>
-                <a href="{% url 'post-detail' item.id %}">details</a>
-                <h3>Creator: <a href="{% url 'user-posts' item.creator.username %}">{{ item.creator }}</a></h3>
-                <p>Creator-img: <img src="{{ item.creator.userprofile.image.url }}" alt=""></p>
-                <p>Created date: {{ item.createdDate|date:"d M y H:i" }}</p>
+                <a href="{% url 'post-detail' object.id %}">details</a>
+                <h3>Creator: <a href="{% url 'user-posts' object.creator.username %}">{{ object.creator }}</a></h3>
+                <p>Creator-img: <img src="{{ object.creator.userprofile.image.url }}" alt=""></p>
+                <p>Created date: {{ object.createdDate|date:"d M y H:i" }}</p>
                 <br>
-                <p>Content <br>{{ item.content }}</p>
+                <p>Content <br>{{ object.content }}</p>
+                <p>Likes: {{ object.number_of_likes }}</p>
             </div>
+            {% include 'sampleApp/like_post.html' %}
         {% endfor %}
     </div>
 
@@ -18,9 +20,9 @@
         {% if page_obj.has_previous %}
             <a href="?page=1">1 ...</a>
             <a href="?page={{ page_obj.previous_page_number }}">prev</a>
-    	{% endif %}
-            <a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
-    	{% if page_obj.has_next %}
+        {% endif %}
+        <a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+        {% if page_obj.has_next %}
             <a href="?page={{ page_obj.next_page_number }}">next</a>
             <a href="?page={{ page_obj.paginator.num_pages }}">... {{ page_obj.paginator.num_pages }}</a>
         {% endif %}

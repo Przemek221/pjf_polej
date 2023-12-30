@@ -7,7 +7,10 @@
         <p>Created date: {{ object.createdDate|date:"d M y H:i" }}</p>
         <p>Content: </p>
         <p>{{ object.content }}</p>
+        <p>Likes: {{ object.number_of_likes }}</p>
     </div>
+
+    {% include 'sampleApp/like_post.html' %}
 
     <div><h3>comment section</h3></div>
 
