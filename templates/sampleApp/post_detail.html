@@ -1,16 +1,33 @@
 {% extends "sampleApp/base.html" %}
-{% block content %}
-    <h1>Posts:</h1>
-    <div>
-        <h3>Creator: <a href="{% url 'user-posts' object.creator.username %}">{{ object.creator }}</a></h3>
-        <p>Creator-img: <img src="{{ object.creator.userprofile.image.url }}" alt=""></p>
-        <p>Created date: {{ object.createdDate|date:"d M y H:i" }}</p>
-        <p>Content: </p>
-        <p>{{ object.content }}</p>
-        <p>Likes: {{ object.number_of_likes }}</p>
-    </div>
+{% block head %}
+    <style>
+        .post-creator-img {
+            width: auto;
+            max-height: 50px;
+        }
 
-    {% include 'sampleApp/like_post.html' %}
+    </style>
+{% endblock %}
+{% block content %}
+    <h1>Post details:</h1>
+    <div class="post">
+        <h3>
+            Created by:
+            <a href="{% url 'user-posts' object.creator.username %}" class="post-creator">
+                {{ object.creator }}
+            </a>
+        </h3>
+        <img class="post-creator-img" src="{{ object.creator.userprofile.image.url }}" alt="post_creator_img">
+        <p class="post-created-date">Created date: {{ object.createdDate|date:"d M y H:i" }}</p>
+        <div class="post-content-wrapper">
+            Content:
+            <p class="post-content">
+                {{ object.content }}
+            </p>
+        </div>
+        <div class="post-likes-counter">Likes: {{ object.number_of_likes }}</div>
+        {% include 'sampleApp/like_post.html' %}
+    </div>
 
     <div><h3>comment section</h3></div>
 

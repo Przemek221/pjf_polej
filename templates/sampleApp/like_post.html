@@ -1,23 +1,21 @@
-<div class="like_post_wrapper">
+<div class="like-post-wrapper">
     {% if user.is_authenticated %}
-        <form action="{% url 'post-like' object.id %}" method="POST">
+        <form class="like-post-form" action="{% url 'post-like' object.id %}" method="POST">
             {% csrf_token %}
-
-
             {% if user in object.likes.all %}
-                <button type="submit" name="post_id" value="{{ object.id }}">
+                <button class="unlike-button" type="submit" name="post_id" value="{{ object.id }}">
                     Unlike
                 </button>
             {% else %}
-                <button type="submit" name="post_id" value="{{ object.id }}">Like
+                <button class="like-button" type="submit" name="post_id" value="{{ object.id }}">
+                    Like
                 </button>
             {% endif %}
-
             <input type="hidden" name="next" value="{{ request.path }}">
         </form>
     {% else %}
-        <a href="{% url 'login' %}?next={{ request.path }}" style="text-decoration: none">
-            <button type="submit" name="post_id" value="{{ object.id }}">
+        <a class="login-redirect" href="{% url 'login' %}?next={{ request.path }}" style="text-decoration: none">
+            <button class="like-button not-logged" type="submit" name="post_id" value="{{ object.id }}">
                 Like
             </button>
         </a>
