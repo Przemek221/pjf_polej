@@ -40,7 +40,7 @@ def xxx(request):
     return render(request, 'sampleApp/index.html', arg)
 
 
-def displayPosts(request):
+def display_posts(request):
     arg = {
         'title': 'abc',
         'posts': Post.objects.all()
@@ -72,7 +72,7 @@ class DisplayPosts(ListView):
         # for item in Post.objects.all():
         # for item in data['object_list']:
         #     data['post_is_liked'].update({f"{item.id}": self.post_is_liked(item.id)})
-            # data['post_is_liked'].append(self.post_is_liked(item.id))
+        # data['post_is_liked'].append(self.post_is_liked(item.id))
 
         return data
 
@@ -90,8 +90,12 @@ class DisplayUsersPosts(ListView):
 
 
 def post_like(request, pk):
+
     # post_id is taken from the form (it's a button value)
-    post = get_object_or_404(Post, id=request.POST.get('post_id'))
+    # post = get_object_or_404(Post, id=request.POST.get('post_id'))
+
+    # int this case it's the post id, so it can be replaced with function argument, which is primary key
+    post = get_object_or_404(Post, id=pk)
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
     else:
@@ -106,11 +110,9 @@ class PostDetails(DetailView):
     model = Post
 
 
-
-
-def postDetails(request, post_id):
+def post_details(request, pk):
     arg = {
-        'object': Post.objects.get(id=post_id)
+        'object': Post.objects.get(id=pk)
     }
     return render(request, 'sampleApp/post_detail.html', arg)
 
@@ -154,7 +156,7 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 #     return render(request, 'sampleApp/register.html', {'argument': 'wartosc'})
 
 
-def registerUser(request):
+def register_user(request):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
         if form.is_valid():

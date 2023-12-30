@@ -43,7 +43,7 @@ class Post(models.Model):
         return f"content: {self.content} | creator: {self.creator}"
 
     def get_absolute_url(self):
-        return reverse('post-detail', kwargs={'post_id': self.id})
+        return reverse('post-detail', kwargs={'pk': self.id})
 
     def number_of_likes(self):
         return self.likes.count()
