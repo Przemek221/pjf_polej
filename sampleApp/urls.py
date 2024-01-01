@@ -1,7 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
-
 urlpatterns = [
     # path('', views.index, name='index')
     # path('', views.AllToDos.as_view(), name='index'),
@@ -12,11 +11,12 @@ urlpatterns = [
 
 
     # pk is the primary key of the current post, "int:" says that it can only contain an integer
-    path('post/<int:pk>/', views.PostDetails.as_view(), name='post-detail'),
+    # path('post/<int:pk>/', views.PostDetails.as_view(), name='post-detail'),
+    path('post/<int:pk>/', views.post_details, name='post-detail'),
 
+    path('post/<int:pk>/comment/', views.CreateComment.as_view(), name='comment'),
 
-    # path('post/<int:pk>/', views.post_details, name='post-detail'),
-
+    path('post/<int:pk>/comment/<int:comment_id>/delete/', views.comment_delete, name="comment-delete"),
 
     path('post/new/', views.CreatePost.as_view(), name='post-create'),
 
@@ -36,3 +36,4 @@ urlpatterns = [
     path('logout', auth_views.LogoutView.as_view(template_name="sampleApp/logout.html"), name='logout'),
     path('register', views.register_user, name='register')
 ]
+

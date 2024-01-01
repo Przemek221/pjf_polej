@@ -1,12 +1,42 @@
 {% extends "sampleApp/base.html" %}
 {% block head %}
     <style>
-        .post-creator-img {
+        .post-creator-img,
+        .comment-creator-img {
             width: auto;
             max-height: 50px;
         }
 
+        .hidden {
+            display: none;
+        }
+
+
+        .comment {
+            display: grid;
+            grid-auto-flow: column;
+        }
+
     </style>
+    <script type="text/javascript">
+        function delete_comment() {
+            let btn = document.getElementById('comment-delete')
+            btn.classList.add("hidden")
+            btn = document.getElementById('comment-delete-link')
+            btn.classList.remove("hidden")
+            btn = document.getElementById('comment-delete-cancel')
+            btn.classList.remove("hidden")
+        }
+
+        function cancel() {
+            let btn = document.getElementById('comment-delete')
+            btn.classList.remove("hidden")
+            btn = document.getElementById('comment-delete-link')
+            btn.classList.add("hidden")
+            btn = document.getElementById('comment-delete-cancel')
+            btn.classList.add("hidden")
+        }
+    </script>
 {% endblock %}
 {% block content %}
     <h1>Post details:</h1>
@@ -29,7 +59,38 @@
         {% include 'sampleApp/like_post.html' %}
     </div>
 
-    <div><h3>comment section</h3></div>
+    <div class="comments-wrapper">
+        <h3>comment section</h3>
+        {% for comment in comments %}
+            <div class="comment">
+                <p class="comment-created-date">created: {{ comment.createdDate|date:"d/M/y H:i" }}</p>
+                <p class="">
+                    commenter:
+                    <a href="{% url 'user-posts' comment.creator.username %}" class="comment-creator">
+                        {{ comment.creator.username }}
+                    </a>
+                </p>
+                <img class="comment-creator-img" src="{{ comment.creator.userprofile.image.url }}"
+                     alt="comment_creator_img">
+                <div class="comment-content-wrapper">
+                    Content:
+                    <p class="comment-content">
+                        {{ comment.content }}
+                    </p>
+                </div>
+
+                {% if comment.creator == user %}
+                    <button id="comment-delete" class="" onclick="delete_comment()">x</button>
+                    <a class="comment-delete hidden" id="comment-delete-link"
+                       href="{% url 'comment-delete' object.id comment.id %}">Yes, delete</a>
+                    <button class="comment-delete hidden" id="comment-delete-cancel" onclick="cancel()">Cancel</button>
+                {% endif %}
+            </div>
+            <hr>
+        {% endfor %}
+
+    </div>
+    <a href="{% url 'comment' object.id %}">comment</a>
 
     <a href="{% url 'login' %}">jakis link - login</a>
     {% if object.creator == user %}

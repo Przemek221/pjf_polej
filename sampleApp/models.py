@@ -53,13 +53,17 @@ class Post(models.Model):
 #     creator = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 
-# class Comment(models.Model):
-#     content = models.TextField
-#     createdDate = models.DateTimeField(auto_now_add=True)
-#     creator = models.ForeignKey(User, on_delete=models.CASCADE)
-#     relatedPost = models.ForeignKey(Post, on_delete=models.CASCADE)
+class Comment(models.Model):
+    content = models.TextField()
+    createdDate = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    relatedPost = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
 
+    def __str__(self):
+        return f"content: {self.content} | creator: {self.creator} | post: {self.relatedPost.content}"
 
+    def get_absolute_url(self):
+        return reverse('post-detail', kwargs={'pk': self.relatedPost.id})
 # class Message(models.Model):
 #     content = models.TextField
 #     createdDate = models.DateTimeField(auto_now_add=True)

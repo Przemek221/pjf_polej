@@ -9,13 +9,13 @@ from django.urls import reverse
 
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Something
-from .models import Post
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import RegisterUserForm, UpdateUserForm, UpdateProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+from .models import Something, Post, Comment
 
 
 # from django.contrib.auth.forms import UserCreationForm
@@ -90,7 +90,6 @@ class DisplayUsersPosts(ListView):
 
 
 def post_like(request, pk):
-
     # post_id is taken from the form (it's a button value)
     # post = get_object_or_404(Post, id=request.POST.get('post_id'))
 
@@ -112,7 +111,8 @@ class PostDetails(DetailView):
 
 def post_details(request, pk):
     arg = {
-        'object': Post.objects.get(id=pk)
+        'object': Post.objects.get(id=pk),
+        'comments': Comment.objects.filter(relatedPost=pk)
     }
     return render(request, 'sampleApp/post_detail.html', arg)
 
@@ -124,6 +124,29 @@ class CreatePost(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         # assigning creator before validation
         form.instance.creator = self.request.user
+        return super().form_valid(form)
+
+
+class CreateComment(LoginRequiredMixin, CreateView):
+    model = Comment
+    fields = ['content']
+
+    # def get_context_data(self, **kwargs):
+    def get_post(self, **kwargs):
+        # data = super().get_context_data(**kwargs)
+        post = get_object_or_404(Post, id=self.kwargs['pk'])
+        return post
+        # data['relatedPost'] = post
+        # data['post_is_liked'] = {}
+        # for item in Post.objects.all():
+        # for item in data['object_list']:
+        #     data['post_is_liked'].update({f"{item.id}": self.post_is_liked(item.id)})
+        # data['post_is_liked'].append(self.post_is_liked(item.id))
+
+    def form_valid(self, form):
+        # assigning creator before validation
+        form.instance.creator = self.request.user
+        form.instance.relatedPost = self.get_post()
         return super().form_valid(form)
 
 
@@ -148,6 +171,15 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.creator
+
+
+@login_required
+def comment_delete(request, pk, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    post_id = pk
+    comment.delete()
+
+    return redirect(reverse('post-detail', args=[post_id]))
 
 
 # def przyklkad(request):
