@@ -6,10 +6,14 @@
 {% block content %}
     <h1>Create post</h1>
     <div>
-        <form action="" method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_div }}
+{#            <input type="file" value="{{ PostAttachments.attachment.filename }}" name="file" multiple>#}
+            {{ post_attachment_form.as_div }}
+
             <input type="submit" value="Create">
+
         </form>
         <div class="errors">
             {% for field, error in form.errors.items %}

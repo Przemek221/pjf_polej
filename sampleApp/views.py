@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, FileResponse
 from django.urls import reverse
 
 # def index(request):
@@ -12,10 +12,11 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import RegisterUserForm, UpdateUserForm, UpdateProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
-from .models import Something, Post, Comment
+from .forms import (RegisterUserForm, UpdateUserForm, UpdateProfileForm,
+                    CreatePostForm, CreatePostAttachmentForm)
+from .models import Something, Post, Comment, PostAttachment
 
 
 # from django.contrib.auth.forms import UserCreationForm
@@ -89,6 +90,7 @@ class DisplayUsersPosts(ListView):
         return Post.objects.filter(creator=user).order_by('-createdDate')
 
 
+@login_required
 def post_like(request, pk):
     # post_id is taken from the form (it's a button value)
     # post = get_object_or_404(Post, id=request.POST.get('post_id'))
@@ -100,9 +102,12 @@ def post_like(request, pk):
     else:
         post.likes.add(request.user)
 
+    if request.POST.get('next') is not None:
+        return HttpResponseRedirect(request.POST.get('next'))
+    else:
+        return redirect('home')
     # return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
     # return HttpResponseRedirect(reverse(request.POST.get('next'), args=[str(pk)]))
-    return HttpResponseRedirect(request.POST.get('next'))
 
 
 class PostDetails(DetailView):
@@ -112,8 +117,10 @@ class PostDetails(DetailView):
 def post_details(request, pk):
     arg = {
         'object': Post.objects.get(id=pk),
-        'comments': Comment.objects.filter(relatedPost=pk)
+        'comments': Comment.objects.filter(relatedPost=pk),
+        'attachments': PostAttachment.objects.filter(relatedPost=pk)
     }
+
     return render(request, 'sampleApp/post_detail.html', arg)
 
 
@@ -121,10 +128,47 @@ class CreatePost(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['content']
 
+    # https://stackoverflow.com/questions/35560758/django-createview-with-multiple-models
     def form_valid(self, form):
         # assigning creator before validation
         form.instance.creator = self.request.user
+
         return super().form_valid(form)
+
+
+# zrobic clas based view z tworzeniem posta i dodawaniem od razu attachmentów jesli sa
+def download_file(request, pk, attachment_id):
+    file = PostAttachment.objects.filter(pk=attachment_id, relatedPost=pk).first()
+    return FileResponse(file.attachment, as_attachment=True)
+
+
+@login_required
+def create_post(request):
+    if request.method == 'POST':
+        post_form = CreatePostForm(request.POST)
+        post_attachment_form = CreatePostAttachmentForm(request.POST, request.FILES)
+        uploaded_files = request.FILES.getlist('attachment')
+        if post_form.is_valid() and post_attachment_form.is_valid():
+            post_form.instance.creator = request.user
+            created_post = post_form.save()
+
+            for file in uploaded_files:
+                temp = PostAttachment(attachment=file, relatedPost=created_post)
+                temp.save()
+                # post_attachment_form.instance.relatedPost = created_post
+                # post_attachment_form.save()
+
+            messages.success(request, "Post created")
+            return redirect(reverse('post-detail', args=[created_post.id]))
+    else:
+        post_form = CreatePostForm()
+        post_attachment_form = CreatePostAttachmentForm()
+
+    arg = {
+        'post_form': post_form,
+        'post_attachment_form': post_attachment_form
+    }
+    return render(request, 'sampleApp/post_form_2.html', arg)
 
 
 class CreateComment(LoginRequiredMixin, CreateView):
@@ -150,9 +194,65 @@ class CreateComment(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+@login_required
+def update_post(request, pk):
+    old_post = get_object_or_404(Post, id=pk)
+    # old_attachments = get_object_or_404(PostAttachment, relatedPost=old_post)
+    old_attachments = PostAttachment.objects.filter(relatedPost=old_post)
+    if request.method == 'POST':
+        post_form = CreatePostForm(request.POST, instance=old_post)
+        post_attachment_form = CreatePostAttachmentForm(request.POST, request.FILES, instance=old_attachments.first())
+        uploaded_files = request.FILES.getlist('attachment')
+        if post_form.is_valid() and post_attachment_form.is_valid():
+            post_form.instance.creator = request.user
+            created_post = post_form.save()
+
+            for file in uploaded_files:
+                temp = PostAttachment(attachment=file, relatedPost=created_post)
+
+                temp.save()
+                # post_attachment_form.instance.relatedPost = created_post
+                # post_attachment_form.save()
+
+            messages.success(request, "Post updated")
+            return redirect(reverse('post-detail', args=[created_post.id]))
+    else:
+        post_form = CreatePostForm(instance=old_post)
+        post_attachment_form = []
+        for attachment in old_attachments:
+            post_attachment_form.append(CreatePostAttachmentForm(instance=attachment))
+
+    arg = {
+        'post_form': post_form,
+        'post_attachment_form': post_attachment_form
+    }
+    return render(request, 'sampleApp/post_form_2.html', arg)
+
+
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     fields = ['content']
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        pk = self.kwargs['pk']
+        attachment = get_object_or_404(PostAttachment, relatedPost=pk)
+        data['post_attachment_form'] = CreatePostAttachmentForm(instance=attachment)
+
+        return data
+
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+
+        old_attachment = get_object_or_404(PostAttachment, relatedPost=pk)
+        post_attachment_form = CreatePostAttachmentForm(instance=old_attachment, data=request.FILES)
+
+        if post_attachment_form.is_valid():
+            post_attachment_form.instance.relatedPost = old_attachment.relatedPost
+            post_attachment_form.save()
+            return super().post(request)
+        else:
+            return super().post(request)
 
     def form_valid(self, form):
         # assigning creator before validation
@@ -173,6 +273,7 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == post.creator
 
 
+# UserPassesTestMixin to dac tu u dolu w argumentach!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 @login_required
 def comment_delete(request, pk, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)

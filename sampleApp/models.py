@@ -1,3 +1,5 @@
+import os.path
+
 from django.db import models
 # from django.contrib.auth.models import AbstractUser
 # from django.contrib.auth.models import AbstractBaseUser
@@ -40,7 +42,7 @@ class Post(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"content: {self.content} | creator: {self.creator}"
+        return f"content: {self.content} | creator: {self.creator} | id: {self.id}"
 
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.id})
@@ -48,9 +50,22 @@ class Post(models.Model):
     def number_of_likes(self):
         return self.likes.count()
 
-# class PostAttachment(models.Model):
-#     content = models.FileField
-#     creator = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+def get_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return f"user_{instance.relatedPost.creator.id}/post_{instance.relatedPost.id}/{filename}"
+
+
+class PostAttachment(models.Model):
+    relatedPost = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='attachments')
+    attachment = models.FileField(upload_to=get_directory_path)
+
+    def __str__(self):
+        return f"post: {self.relatedPost.id} | attachment_name: {self.attachment.name}"
+
+    @property
+    def filename(self):
+        return os.path.basename(self.attachment.name)
 
 
 class Comment(models.Model):
@@ -64,12 +79,3 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.relatedPost.id})
-# class Message(models.Model):
-#     content = models.TextField
-#     createdDate = models.DateTimeField(auto_now_add=True)
-#     creator = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
-# class MessageAttachment(models.Model):
-#     content = models.FileField
-#     creator = models.ForeignKey(Message, on_delete=models.CASCADE)

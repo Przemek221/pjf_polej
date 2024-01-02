@@ -14,18 +14,24 @@ urlpatterns = [
     # path('post/<int:pk>/', views.PostDetails.as_view(), name='post-detail'),
     path('post/<int:pk>/', views.post_details, name='post-detail'),
 
+
+    path('post/<int:pk>/<int:attachment_id>', views.download_file, name='download'),
+
     path('post/<int:pk>/comment/', views.CreateComment.as_view(), name='comment'),
 
     path('post/<int:pk>/comment/<int:comment_id>/delete/', views.comment_delete, name="comment-delete"),
 
-    path('post/new/', views.CreatePost.as_view(), name='post-create'),
+    # path('post/new/', views.CreatePost.as_view(), name='post-create'),
+    path('post/new/', views.create_post, name='post-create'),
+
 
 
     # path('post-like/<int:pk>', views.post_like, name="post-like"),
     path('post-like/<int:pk>', views.post_like, name="post-like"),
 
     # variable must be called "pk" in this template
-    path('post/<int:pk>/update/', views.UpdatePost.as_view(), name='post-update'),
+    # path('post/<int:pk>/update/', views.UpdatePost.as_view(), name='post-update'),
+    path('post/<int:pk>/update/', views.update_post, name='post-update'),
 
     path('post/<int:pk>/delete/', views.PostDelete.as_view(), name='post-delete'),
 

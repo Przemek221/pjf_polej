@@ -55,6 +55,17 @@
                 {{ object.content }}
             </p>
         </div>
+        <div>
+            attachments:
+            {% for attachment in attachments %}
+                <div>
+                    <a href="{% url 'download' object.id attachment.id %}">{{ attachment.filename }}</a>
+                    <a href="{{ attachment.attachment.url }}" target="_blank">see</a>
+                </div>
+            {% endfor %}
+
+
+        </div>
         <div class="post-likes-counter">Likes: {{ object.number_of_likes }}</div>
         {% include 'sampleApp/like_post.html' %}
     </div>

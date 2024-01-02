@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import UserProfile
+from django.forms import ClearableFileInput
+
+from .models import UserProfile, Post, PostAttachment
 
 
 class RegisterUserForm(UserCreationForm):
@@ -25,3 +27,20 @@ class UpdateProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['image']
+
+
+class CreatePostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['content']
+
+
+class CreatePostAttachmentForm(forms.ModelForm):
+    class Meta:
+        model = PostAttachment
+        fields = ['attachment']
+        widgets = {
+            'attachment': ClearableFileInput(attrs={'multiple': True})
+        }
+
+# https://stackoverflow.com/questions/38257231/how-can-i-upload-multiple-files-to-a-model-field
