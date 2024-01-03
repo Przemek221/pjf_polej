@@ -1,8 +1,7 @@
 import os.path
+from mimetypes import guess_type
 
 from django.db import models
-# from django.contrib.auth.models import AbstractUser
-# from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import User
 from PIL import Image
 from django.urls import reverse
@@ -58,7 +57,6 @@ def get_directory_path(instance, filename):
 
 class PostAttachment(models.Model):
     relatedPost = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='attachments')
-    # attachment = models.FileField(upload_to=get_directory_path, blank=True)
     attachment = models.FileField(upload_to=get_directory_path)
 
     def __str__(self):
@@ -67,6 +65,14 @@ class PostAttachment(models.Model):
     @property
     def filename(self):
         return os.path.basename(self.attachment.name)
+
+    @property
+    def file_type(self):
+        type_tuple = guess_type(self.attachment.url, strict=True)
+        if (type_tuple[0]).__contains__("image"):
+            return "image"
+        elif (type_tuple[0]).__contains__("video"):
+            return "video"
 
 
 class Comment(models.Model):

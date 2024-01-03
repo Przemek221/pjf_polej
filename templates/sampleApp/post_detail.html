@@ -20,20 +20,20 @@
     </style>
     <script type="text/javascript">
         function delete_comment(id) {
-            let btn = document.getElementById('comment-delete-'+id)
+            let btn = document.getElementById('comment-delete-' + id)
             btn.classList.add("hidden")
-            btn = document.getElementById('comment-delete-link-'+id)
+            btn = document.getElementById('comment-delete-link-' + id)
             btn.classList.remove("hidden")
-            btn = document.getElementById('comment-delete-cancel-'+id)
+            btn = document.getElementById('comment-delete-cancel-' + id)
             btn.classList.remove("hidden")
         }
 
         function cancel(id) {
-            let btn = document.getElementById('comment-delete-'+id)
+            let btn = document.getElementById('comment-delete-' + id)
             btn.classList.remove("hidden")
-            btn = document.getElementById('comment-delete-link-'+id)
+            btn = document.getElementById('comment-delete-link-' + id)
             btn.classList.add("hidden")
-            btn = document.getElementById('comment-delete-cancel-'+id)
+            btn = document.getElementById('comment-delete-cancel-' + id)
             btn.classList.add("hidden")
         }
     </script>
@@ -61,8 +61,14 @@
                 attachments:
                 {% for attachment in attachments %}
                     <div>
+                        {% if attachment.file_type == "image" %}
+                            <a href="{{ attachment.attachment.url }}" target="_blank">
+                                <img src="{{ attachment.attachment.url }}" alt="{{ attachment.filename }}">
+                            </a>
+                        {% else %}
+                            <a href="{{ attachment.attachment.url }}" target="_blank">see</a>
+                        {% endif %}
                         <a href="{% url 'download' object.id attachment.id %}">{{ attachment.filename }}</a>
-                        <a href="{{ attachment.attachment.url }}" target="_blank">see</a>
                     </div>
                 {% endfor %}
             {% endif %}
