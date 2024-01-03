@@ -40,7 +40,11 @@ class CreatePostAttachmentForm(forms.ModelForm):
         model = PostAttachment
         fields = ['attachment']
         widgets = {
+            # this will make that form will accept multiple files
             'attachment': ClearableFileInput(attrs={'multiple': True})
         }
 
-# https://stackoverflow.com/questions/38257231/how-can-i-upload-multiple-files-to-a-model-field
+    def __init__(self, *args, **kwargs):
+        super(CreatePostAttachmentForm, self).__init__(*args, **kwargs)
+        self.fields['attachment'].required = False
+

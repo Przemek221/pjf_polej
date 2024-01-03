@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
@@ -128,7 +130,6 @@ class CreatePost(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['content']
 
-    # https://stackoverflow.com/questions/35560758/django-createview-with-multiple-models
     def form_valid(self, form):
         # assigning creator before validation
         form.instance.creator = self.request.user

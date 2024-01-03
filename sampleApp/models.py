@@ -58,6 +58,7 @@ def get_directory_path(instance, filename):
 
 class PostAttachment(models.Model):
     relatedPost = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='attachments')
+    # attachment = models.FileField(upload_to=get_directory_path, blank=True)
     attachment = models.FileField(upload_to=get_directory_path)
 
     def __str__(self):
