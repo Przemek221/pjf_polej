@@ -2,22 +2,33 @@
 {% load static %}
 {% block head %}
     <style>
-        .attachments > div *:not(a) {
+        .hidden {
             display: none;
         }
-
-        .attachments div {
-            font-size: 0
-        }
-
-        .attachments div * {
-            font-size: 15px
-        }
-
-        .attachments > div:last-of-type input {
-            display: block;
-        }
     </style>
+    <script type="text/javascript">
+        function delete_attachment() {
+            let btn = document.getElementById('attachment-delete')
+            btn.classList.add("hidden")
+            btn = document.getElementById('attachment-delete-link')
+            btn.classList.remove("hidden")
+            btn = document.getElementById('attachment-delete-cancel')
+            btn.classList.remove("hidden")
+        }
+
+        function foo() {
+            console.log("abc")
+        }
+
+        function cancel() {
+            let btn = document.getElementById('attachment-delete')
+            btn.classList.remove("hidden")
+            btn = document.getElementById('attachment-delete-link')
+            btn.classList.add("hidden")
+            btn = document.getElementById('attachment-delete-cancel')
+            btn.classList.add("hidden")
+        }
+    </script>
 {% endblock %}
 {% block content %}
     <h1>Create post</h1>
@@ -25,19 +36,33 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_div }}
-            {#            <input type="file" value="{{ PostAttachments.attachment.filename }}" name="file" multiple>#}
-            {#            {{ post_attachment_form.as_div }}#}
-            <div class="attachments">
-                <p>attached files:</p>
-                {{ post_attachment_form.as_div }}
-                {% for foo in post_attachment_form %}
-                    {{ foo.as_div }}
-                {% endfor %}
-            </div>
-
+            {{ post_attachment_form.as_div }}
             <input type="submit" value="Create">
-
         </form>
+
+        <div>
+            {% if attachments %}
+                currently uploaded attachments:
+
+                {% for attachment in attachments %}
+                    <div>
+                        <a href="{{ attachment.attachment.url }}" target="_blank">{{ attachment.filename }}</a>
+
+                        <button id="attachment-delete" class="" onclick="delete_attachment()">x</button>
+
+                        <a class="attachment-delete hidden" id="attachment-delete-link"
+                           href="{% url 'attachment-delete' post.id attachment.id %}">Yes, delete</a>
+
+                        <button class="attachment-delete hidden" id="attachment-delete-cancel"
+                                onclick="cancel()">
+                            Cancel
+                        </button>
+
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
         <div class="errors">
             {% for field, error in form.errors.items %}
                 <div class="error_element">

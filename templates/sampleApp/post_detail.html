@@ -56,13 +56,16 @@
             </p>
         </div>
         <div>
-            attachments:
-            {% for attachment in attachments %}
-                <div>
-                    <a href="{% url 'download' object.id attachment.id %}">{{ attachment.filename }}</a>
-                    <a href="{{ attachment.attachment.url }}" target="_blank">see</a>
-                </div>
-            {% endfor %}
+
+            {% if attachments %}
+                attachments:
+                {% for attachment in attachments %}
+                    <div>
+                        <a href="{% url 'download' object.id attachment.id %}">{{ attachment.filename }}</a>
+                        <a href="{{ attachment.attachment.url }}" target="_blank">see</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
 
 
         </div>

@@ -1,5 +1,3 @@
-import logging
-
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
@@ -137,7 +135,6 @@ class CreatePost(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-# zrobic clas based view z tworzeniem posta i dodawaniem od razu attachmentów jesli sa
 def download_file(request, pk, attachment_id):
     file = PostAttachment.objects.filter(pk=attachment_id, relatedPost=pk).first()
     return FileResponse(file.attachment, as_attachment=True)
@@ -239,20 +236,17 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         pk = self.kwargs['pk']
 
         old_attachments = PostAttachment.objects.filter(relatedPost=pk)
-        data['post_attachment_form'] = []
         if old_attachments.first() is not None:
-            for attachment in old_attachments:
-                data['post_attachment_form'].append(CreatePostAttachmentForm(instance=attachment))
-        else:
-            data['post_attachment_form'].append(CreatePostAttachmentForm())
+            data['attachments'] = old_attachments.all()
+        data['post_attachment_form'] = CreatePostAttachmentForm()
+
         return data
 
     def post(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
         created_post = get_object_or_404(Post, pk=pk)
 
-        old_attachments = PostAttachment.objects.filter(relatedPost=pk)
-        post_attachment_form = CreatePostAttachmentForm(request.POST, request.FILES, instance=old_attachments.first())
+        post_attachment_form = CreatePostAttachmentForm(request.POST, request.FILES)
         uploaded_files = request.FILES.getlist('attachment')
         if post_attachment_form.is_valid():
             for file in uploaded_files:
@@ -280,14 +274,27 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == post.creator
 
 
-# UserPassesTestMixin to dac tu u dolu w argumentach!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 @login_required
 def comment_delete(request, pk, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     post_id = pk
-    comment.delete()
+    if comment.creator == request.user:
+        comment.delete()
+    else:
+        messages.error(request, "You are not the commenter")
 
     return redirect(reverse('post-detail', args=[post_id]))
+
+
+@login_required
+def attachment_delete(request, pk, attachment_id):
+    attachment = get_object_or_404(PostAttachment, pk=attachment_id)
+    if attachment.relatedPost.creator == request.user:
+        attachment.delete()
+    else:
+        messages.error(request, "You are not the owner of the post")
+
+    return redirect(reverse('post-update', args=[pk]))
 
 
 # def przyklkad(request):
