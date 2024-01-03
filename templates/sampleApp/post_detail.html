@@ -19,21 +19,21 @@
 
     </style>
     <script type="text/javascript">
-        function delete_comment() {
-            let btn = document.getElementById('comment-delete')
+        function delete_comment(id) {
+            let btn = document.getElementById('comment-delete-'+id)
             btn.classList.add("hidden")
-            btn = document.getElementById('comment-delete-link')
+            btn = document.getElementById('comment-delete-link-'+id)
             btn.classList.remove("hidden")
-            btn = document.getElementById('comment-delete-cancel')
+            btn = document.getElementById('comment-delete-cancel-'+id)
             btn.classList.remove("hidden")
         }
 
-        function cancel() {
-            let btn = document.getElementById('comment-delete')
+        function cancel(id) {
+            let btn = document.getElementById('comment-delete-'+id)
             btn.classList.remove("hidden")
-            btn = document.getElementById('comment-delete-link')
+            btn = document.getElementById('comment-delete-link-'+id)
             btn.classList.add("hidden")
-            btn = document.getElementById('comment-delete-cancel')
+            btn = document.getElementById('comment-delete-cancel-'+id)
             btn.classList.add("hidden")
         }
     </script>
@@ -94,10 +94,17 @@
                 </div>
 
                 {% if comment.creator == user %}
-                    <button id="comment-delete" class="" onclick="delete_comment()">x</button>
-                    <a class="comment-delete hidden" id="comment-delete-link"
-                       href="{% url 'comment-delete' object.id comment.id %}">Yes, delete</a>
-                    <button class="comment-delete hidden" id="comment-delete-cancel" onclick="cancel()">Cancel</button>
+                    <button id="comment-delete-{{ comment.id }}" class="" onclick="delete_comment({{ comment.id }})">
+                        x
+                    </button>
+                    <a class="comment-delete hidden" id="comment-delete-link-{{ comment.id }}"
+                       href="{% url 'comment-delete' object.id comment.id %}">
+                        Yes, delete
+                    </a>
+                    <button class="comment-delete hidden" id="comment-delete-cancel-{{ comment.id }}"
+                            onclick="cancel({{ comment.id }})">
+                        Cancel
+                    </button>
                 {% endif %}
             </div>
             <hr>

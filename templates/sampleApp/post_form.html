@@ -7,25 +7,21 @@
         }
     </style>
     <script type="text/javascript">
-        function delete_attachment() {
-            let btn = document.getElementById('attachment-delete')
+        function delete_attachment(id) {
+            let btn = document.getElementById('attachment-delete-'+id)
             btn.classList.add("hidden")
-            btn = document.getElementById('attachment-delete-link')
+            btn = document.getElementById('attachment-delete-link-'+id)
             btn.classList.remove("hidden")
-            btn = document.getElementById('attachment-delete-cancel')
+            btn = document.getElementById('attachment-delete-cancel-'+id)
             btn.classList.remove("hidden")
         }
 
-        function foo() {
-            console.log("abc")
-        }
-
-        function cancel() {
-            let btn = document.getElementById('attachment-delete')
+        function cancel(id) {
+            let btn = document.getElementById('attachment-delete-'+id)
             btn.classList.remove("hidden")
-            btn = document.getElementById('attachment-delete-link')
+            btn = document.getElementById('attachment-delete-link-'+id)
             btn.classList.add("hidden")
-            btn = document.getElementById('attachment-delete-cancel')
+            btn = document.getElementById('attachment-delete-cancel-'+id)
             btn.classList.add("hidden")
         }
     </script>
@@ -48,13 +44,13 @@
                     <div>
                         <a href="{{ attachment.attachment.url }}" target="_blank">{{ attachment.filename }}</a>
 
-                        <button id="attachment-delete" class="" onclick="delete_attachment()">x</button>
+                        <button id="attachment-delete-{{ attachment.id }}" class="" onclick="delete_attachment({{ attachment.id }})">x</button>
 
-                        <a class="attachment-delete hidden" id="attachment-delete-link"
+                        <a class="attachment-delete hidden" id="attachment-delete-link-{{ attachment.id }}"
                            href="{% url 'attachment-delete' post.id attachment.id %}">Yes, delete</a>
 
-                        <button class="attachment-delete hidden" id="attachment-delete-cancel"
-                                onclick="cancel()">
+                        <button class="attachment-delete hidden" id="attachment-delete-cancel-{{ attachment.id }}"
+                                onclick="cancel({{ attachment.id }})">
                             Cancel
                         </button>
 
