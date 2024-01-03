@@ -236,23 +236,29 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         pk = self.kwargs['pk']
-        attachment = get_object_or_404(PostAttachment, relatedPost=pk)
-        data['post_attachment_form'] = CreatePostAttachmentForm(instance=attachment)
 
+        old_attachments = PostAttachment.objects.filter(relatedPost=pk)
+        data['post_attachment_form'] = []
+        if old_attachments.first() is not None:
+            for attachment in old_attachments:
+                data['post_attachment_form'].append(CreatePostAttachmentForm(instance=attachment))
+        else:
+            data['post_attachment_form'].append(CreatePostAttachmentForm())
         return data
 
     def post(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
+        created_post = get_object_or_404(Post, pk=pk)
 
-        old_attachment = get_object_or_404(PostAttachment, relatedPost=pk)
-        post_attachment_form = CreatePostAttachmentForm(instance=old_attachment, data=request.FILES)
-
+        old_attachments = PostAttachment.objects.filter(relatedPost=pk)
+        post_attachment_form = CreatePostAttachmentForm(request.POST, request.FILES, instance=old_attachments.first())
+        uploaded_files = request.FILES.getlist('attachment')
         if post_attachment_form.is_valid():
-            post_attachment_form.instance.relatedPost = old_attachment.relatedPost
-            post_attachment_form.save()
-            return super().post(request)
-        else:
-            return super().post(request)
+            for file in uploaded_files:
+                temp = PostAttachment(attachment=file, relatedPost=created_post)
+                temp.save()
+
+        return super().post(request)
 
     def form_valid(self, form):
         # assigning creator before validation

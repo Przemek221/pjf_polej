@@ -30,8 +30,8 @@ urlpatterns = [
     path('post-like/<int:pk>', views.post_like, name="post-like"),
 
     # variable must be called "pk" in this template
-    # path('post/<int:pk>/update/', views.UpdatePost.as_view(), name='post-update'),
-    path('post/<int:pk>/update/', views.update_post, name='post-update'),
+    path('post/<int:pk>/update/', views.UpdatePost.as_view(), name='post-update'),
+    # path('post/<int:pk>/update/', views.update_post, name='post-update'),
 
     path('post/<int:pk>/delete/', views.PostDelete.as_view(), name='post-delete'),
 

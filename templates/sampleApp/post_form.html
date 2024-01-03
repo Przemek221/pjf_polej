@@ -1,7 +1,23 @@
 {% extends "sampleApp/base.html" %}
 {% load static %}
 {% block head %}
+    <style>
+        .attachments > div *:not(a) {
+            display: none;
+        }
 
+        .attachments div {
+            font-size: 0
+        }
+
+        .attachments div * {
+            font-size: 15px
+        }
+
+        .attachments > div:last-of-type input {
+            display: block;
+        }
+    </style>
 {% endblock %}
 {% block content %}
     <h1>Create post</h1>
@@ -9,8 +25,15 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_div }}
-{#            <input type="file" value="{{ PostAttachments.attachment.filename }}" name="file" multiple>#}
-            {{ post_attachment_form.as_div }}
+            {#            <input type="file" value="{{ PostAttachments.attachment.filename }}" name="file" multiple>#}
+            {#            {{ post_attachment_form.as_div }}#}
+            <div class="attachments">
+                <p>attached files:</p>
+                {{ post_attachment_form.as_div }}
+                {% for foo in post_attachment_form %}
+                    {{ foo.as_div }}
+                {% endfor %}
+            </div>
 
             <input type="submit" value="Create">
 
