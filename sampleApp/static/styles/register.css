@@ -86,7 +86,7 @@
     }
 
     & input[type="submit"] {
-        width: 35%;
+        max-width: 150px;
         border: 0;
         border-radius: 3px;
         background: white;

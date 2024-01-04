@@ -1,9 +1,18 @@
 {% extends "sampleApp/base.html" %}
 {% load static %}
 {% block head %}
-    <link rel="stylesheet" href=" {% static 'styles/register.css' %} ">
+    <style>
+        #content-wrapper {
+            max-width: 500px;
+        }
+
+        #content-wrapper h1 {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 700;
+        }
+    </style>
 {% endblock %}
 {% block content %}
     <h1>Successfully logged out</h1>
-    <a href="{% url 'login' %}">login</a>
 {% endblock content %}
