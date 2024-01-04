@@ -16,6 +16,7 @@ body {
     flex-direction: column;
     justify-content: center;
     background: rgba(0, 0, 0, 0.58);
+    font-family: Arial, serif;
 }
 
 .nav-bar {

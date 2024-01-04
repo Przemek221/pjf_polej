@@ -1,25 +1,16 @@
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
-
-# Create your views here.
-from django.http import HttpResponse, HttpResponseRedirect, FileResponse
+from django.http import HttpResponseRedirect, FileResponse
 from django.urls import reverse
-
-# def index(request):
-#     return HttpResponse("Hello, world. You're at the polls index.")
-
-
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-
-from .forms import (RegisterUserForm, UpdateUserForm, UpdateProfileForm,
+from .forms import (UpdateUserForm, UpdateProfileForm,
                     CreatePostForm, CreatePostAttachmentForm)
 from .models import Something, Post, Comment, PostAttachment
 
-
-# from django.contrib.auth.forms import UserCreationForm
 
 class AllToDos(ListView):
     model = Something
@@ -305,14 +296,14 @@ def attachment_delete(request, pk, attachment_id):
 
 def register_user(request):
     if request.method == 'POST':
-        form = RegisterUserForm(request.POST)
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f"User {username} registered")
             return redirect('login')
     else:
-        form = RegisterUserForm()
+        form = UserCreationForm()
     return render(request, 'sampleApp/register.html', {'form': form, 'title': 'register'})
 
 

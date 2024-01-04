@@ -12,7 +12,6 @@
             <input type="submit" value="Login">
         </form>
     </div>
-
     <div class="errors">
         {% for field, error in form.errors.items %}
             <div class="error-element">
@@ -21,7 +20,7 @@
         {% endfor %}
     </div>
     <p class="register-paragraph">
-        Already have an account?
+        Don't have an account?
         <a href="{% url 'register' %}" class="register-link">Register</a>
     </p>
 {% endblock content %}

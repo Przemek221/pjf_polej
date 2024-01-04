@@ -4,8 +4,8 @@
     <link rel="stylesheet" href=" {% static 'styles/register.css' %} ">
 {% endblock %}
 {% block content %}
-    <h1>Register User</h1>
-    <div>
+    <h1 class="form-header">Create an account</h1>
+    <div class="form-wrapper">
         <form action="" method="post">
             {% csrf_token %}
             {{ form.as_div }}
@@ -13,13 +13,14 @@
         </form>
         <div class="errors">
             {% for field, error in form.errors.items %}
-                <div class="error_element">
+                <div class="error-element">
                     {{ error|striptags }}
                 </div>
             {% endfor %}
         </div>
     </div>
-
-
-    <a href="{% url 'login' %}">jakis link - login</a>
+    <p class="register-paragraph">
+        Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+    </p>
 {% endblock content %}
