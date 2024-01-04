@@ -1,55 +1,27 @@
-{#{% load static %}#}
-{#<!doctype html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <meta name="viewport"#}
-{#          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">#}
-{#    <meta http-equiv="X-UA-Compatible" content="ie=edge">#}
-{#    <title>Super-App</title>#}
-{#    <link rel="stylesheet" href=" {% static 'styles/login.css' %} ">#}
-{#</head>#}
-{#<body>#}
-{#<div class="baner">Super Social Media App</div>#}
-{#<div class="form-wrapper">#}
-{#    <form action="">#}
-{#        <input type="text" name="nickname" id="nickname" placeholder="Nickname">#}
-{#        <input type="password" name="password" id="password" placeholder="Password">#}
-{#        <input type="button" value="Sign in">#}
-{#        <a href="register" target="_blank">Create account</a>#}
-{#    </form>#}
-{#</div>#}
-{#</body>#}
-{#</html>#}
-
-
-{#        <input type="text" name="nickname" id="nickname" placeholder="Nickname">#}
-{#        <input type="password" name="passwd" id="passwd" placeholder="Password">#}
-
-
-
 {% extends "sampleApp/base.html" %}
 {% load static %}
 {% block head %}
-    <link rel="stylesheet" href=" {% static 'styles/register.css' %} ">
+    <link rel="stylesheet" href=" {% static 'styles/login.css' %} ">
 {% endblock %}
 {% block content %}
-    <h1>Log in</h1>
-    <div>
+    <h1 class="form-header">Log in</h1>
+    <div class="form-wrapper">
         <form action="" method="post">
             {% csrf_token %}
             {{ form.as_div }}
             <input type="submit" value="Login">
         </form>
-        <div class="errors">
-            {% for field, error in form.errors.items %}
-                <div class="error_element">
-                    {{ error|striptags }}
-                </div>
-            {% endfor %}
-        </div>
     </div>
 
-
-    <a href="{% url 'register' %}">register</a>
+    <div class="errors">
+        {% for field, error in form.errors.items %}
+            <div class="error-element">
+                {{ error|striptags }}
+            </div>
+        {% endfor %}
+    </div>
+    <p class="register-paragraph">
+        Already have an account?
+        <a href="{% url 'register' %}" class="register-link">Register</a>
+    </p>
 {% endblock content %}
