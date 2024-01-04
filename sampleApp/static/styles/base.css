@@ -27,10 +27,50 @@ body {
     padding: 20px 0;
 }
 
+.nav-bar a {
+    display: flex;
+    font-size: 22px;
+    background: white;
+    padding: 6px;
+    color: black;
+    height: fit-content;
+    line-height: 1;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 3px;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.8);
+    }
+}
+
+.nav-bar .home-button {
+    display: flex;
+    font-size: 30px;
+    background: white;
+    padding: 6px;
+    color: black;
+
+    & img {
+        width: 45px;
+        border-radius: 20px;
+    }
+
+    & p {
+        font-weight: 700;
+        text-transform: uppercase;
+        text-decoration: none;
+        width: auto;
+        margin: auto 0;
+    }
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
 #content-wrapper {
     overflow: auto;
     width: 90%;
-    /*height: 90%;*/
     margin: auto;
     background: rgb(255 255 255 / 80%);
     padding: 15px;
