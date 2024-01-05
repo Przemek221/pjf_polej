@@ -25,6 +25,10 @@ def xxx(request):
     return render(request, 'sampleApp/index.html', arg)
 
 
+def get_attachments(post_id):
+    return PostAttachment.objects.filter(relatedPost=post_id).all()
+
+
 class DisplayPosts(ListView):
     model = Post
     # by default template name is: appName/modelName_viewType
@@ -35,6 +39,10 @@ class DisplayPosts(ListView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['attachments'] = {}
+        for item in data['posts']:
+            attachments = get_attachments(item.id)
+            data['attachments'].update({item.id: attachments})
         return data
 
 
@@ -48,6 +56,14 @@ class DisplayUsersPosts(ListView):
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return Post.objects.filter(creator=user).order_by('-createdDate')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['attachments'] = {}
+        for item in data['posts']:
+            attachments = get_attachments(item.id)
+            data['attachments'].update({item.id: attachments})
+        return data
 
 
 @login_required

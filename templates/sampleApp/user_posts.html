@@ -1,46 +1,109 @@
 {% extends "sampleApp/base.html" %}
+{% load static %}
+
 {% block head %}
+    <link rel="stylesheet" href="{% static 'styles/post_detail.css' %}">
     <style>
-        .post-creator-img {
-            width: auto;
-            max-height: 50px;
+        #content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .post {
-            display: grid;
-            grid-auto-flow: column;
+        #content-wrapper .post .post-detail-date {
+            display: flex;
+            flex-direction: column-reverse;
+
+            & .post-created-date {
+                height: 50%;
+            }
+
+            & .post-details {
+                height: fit-content;
+                width: fit-content;
+                color: black;
+                border-radius: 3px;
+                background: white;
+                padding: 5px;
+                line-height: 1;
+                font-size: 16px;
+                font-weight: normal;
+                border: 1px solid;
+
+                &:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 0 2px 0 #505050;
+                }
+            }
         }
 
-        .post-content-wrapper {
-            width: 300px;
+        #content-wrapper .post {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        #content-wrapper .user-posts-header {
+            text-align: center;
         }
     </style>
 {% endblock %}
+
 {% block content %}
-    <h1>{{ view.kwargs.username }} posts:</h1>
-    <div>
-        {% for object in posts %}
-            <div class="post">
-                <a href="{% url 'post-detail' object.id %}" class="post-details">details</a>
-                <h3>
-                    <a href="{% url 'user-posts' object.creator.username %}" class="post-creator">
-                        {{ object.creator }}
-                    </a>
-                </h3>
-                <img class="post-creator-img" src="{{ object.creator.userprofile.image.url }}" alt="post_creator_img">
-                <p class="post-created-date">Created date: {{ object.createdDate|date:"d M y H:i" }}</p>
-                <div class="post-content-wrapper">
-                    Content
-                    <p class="post-content">
-                        {{ object.content }}
-                    </p>
-                </div>
-                <div class="post-likes-counter">Likes: {{ object.number_of_likes }}</div>
+    <h1 class="user-posts-header">{{ view.kwargs.username }} posts:</h1>
+
+    {% for object in posts %}
+        <div class="post">
+            <div class="post-likes-wrapper">
+                <div class="post-likes-counter">{{ object.number_of_likes }}</div>
                 {% include 'sampleApp/like_post.html' %}
             </div>
-            <hr>
-        {% endfor %}
-    </div>
+            <div class="post-info-wrapper">
+                <img class="post-creator-img" src="{{ object.creator.userprofile.image.url }}"
+                     alt="post_creator_img">
+                <a href="{% url 'user-posts' object.creator.username %}" class="post-creator">
+                    {{ object.creator }}
+                </a>
+                <div class="post-detail-date">
+                    <a href="{% url 'post-detail' object.id %}" class="post-details"> Post Details </a>
+                    <p class="post-created-date">{{ object.createdDate|date:"d M y H:i" }}</p>
+                </div>
+            </div>
+            <div class="post-content-wrapper">
+                <p class="post-content">
+                    {{ object.content }}
+                </p>
+            </div>
+            <div class="attachments">
+                {% if attachments %}
+                    {% for key, values in attachments.items %}
+                        {% if key == object.id %}
+                            {% for value in values %}
+                                <div class="attachment">
+                                    {% if value.file_type == "image" %}
+                                        <a href="{{ value.attachment.url }}" target="_blank"
+                                           class="img-attachment-link">
+                                            <img src="{{ value.attachment.url }}" alt="{{ value.filename }}">
+                                        </a>
+                                    {% else %}
+                                        <div class="file-attachment">
+                                            <a href="{{ value.attachment.url }}"
+                                               target="_blank">{{ value.filename }}</a>
+                                            <a href="{% url 'download' object.id value.id %}">
+                                                <img src="{% static 'images/download.png' %}" alt="download"
+                                                     class="download-img">
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
 
     {% if is_paginated %}
         {% include 'sampleApp/pagination.html' %}
