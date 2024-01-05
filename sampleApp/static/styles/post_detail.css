@@ -110,6 +110,7 @@
     box-shadow: 0 0 10px 1px #575757;
     margin-right: 40px;
     padding: 10px;
+    height: fit-content;
 }
 
 #content-wrapper .post .post-content {
