@@ -1,8 +1,84 @@
-.profile-picture{
-    max-width: 100px;
+#content-wrapper {
+    display: grid;
+    grid-template-columns: 60% 40%;
+
+    & .user-info-wrapper {
+        margin-right: 20px;
+    }
 }
 
-.wrapper{
+#content-wrapper .user-info-wrapper .profile-picture {
+    margin: 15px 0;
+    max-width: 300px;
+    padding: 10px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 0 #fff;
+}
+
+#content-wrapper .user-info-wrapper .user-info {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    margin: 20px 0;
+
+    &:last-child {
+        flex-direction: column;
+    }
+
+    & p {
+        margin: 0;
+        background: white;
+        padding: 2px;
+        box-shadow: 0 0 5px 0 #fff;
+    }
+}
+
+#content-wrapper form {
+    width: 100%;
     display: grid;
-    grid-template-columns: 70% 30%;
+    grid-auto-flow: row;
+    row-gap: 10px;
+
+    & input, & label {
+        font-size: 16px;
+    }
+
+    & input[type="text"],
+    & input[type="email"] {
+        border-width: 0;
+        border-radius: 4px;
+        background: white;
+        font-size: 16px;
+    }
+
+    & input[type="submit"] {
+        max-width: 150px;
+        border: 0;
+        border-radius: 3px;
+        background: white;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+}
+
+#content-wrapper form div .helptext {
+    font-size: 12px;
+}
+
+#content-wrapper form div .errorlist {
+    margin: 5px 0;
+    font-size: 13px;
+    list-style-type: none;
+    padding: 0 10px;
+
+    & li {
+        background: #ff000085;
+        text-align: center;
+        border-radius: 4px;
+        padding: 2px;
+        margin: 5px 0;
+    }
 }

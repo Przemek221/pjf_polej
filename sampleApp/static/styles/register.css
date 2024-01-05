@@ -1,4 +1,4 @@
-.errorlist,
+#content-wrapper .errorlist,
 #content-wrapper form div:last-of-type .helptext {
     display: none;
 }
@@ -6,17 +6,6 @@
 #content-wrapper > div {
     display: grid;
     grid-template-columns: 60% 40%;
-}
-
-.error-element {
-    background: white;
-    text-align: center;
-    border: 1px solid red;
-    border-radius: 4px;
-}
-
-#content-wrapper .errorlist {
-    display: none;
 }
 
 #content-wrapper .error-element {

@@ -1,24 +1,31 @@
-
-
 {% extends "sampleApp/base.html" %}
 {% load static %}
 {% block head %}
     <link rel="stylesheet" href=" {% static 'styles/profile.css' %} ">
 {% endblock %}
 {% block content %}
-    <div class="wrapper">
-        <div>
-            <p>username: {{ user.username }} {# dont need to pass user as an arg. #} </p>
-            <p>user email: {{ user.email }}</p>
+    <div class="user-info-wrapper">
+        <h3 class="user-info-header">Your profile:</h3>
+        <div class="user-info username">
+            Username:
+            <p>{{ user.username }}</p> {# dont need to pass user as an arg. #}
+        </div>
+        <div class="user-info email">
+            Email:
+            <p>{{ user.email }}</p>
+        </div>
+        <div class="user-info picture">
+            Profile picture:
             <img src="{{ user.userprofile.image.url }}" alt="usr img" class="profile-picture">
         </div>
-        <div>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ update_user_form.as_div }}
-                {{ update_profile_form.as_div }}
-                <input type="submit" value="Save changes">
-            </form>
-        </div>
+    </div>
+    <div class="form-wrapper">
+        <h3 class="form-header">Change profile:</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ update_user_form.as_div }}
+            {{ update_profile_form.as_div }}
+            <input type="submit" value="Save changes">
+        </form>
     </div>
 {% endblock content %}
