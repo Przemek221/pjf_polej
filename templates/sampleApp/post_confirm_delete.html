@@ -1,7 +1,39 @@
 {% extends "sampleApp/base.html" %}
 {% load static %}
 {% block head %}
+    <style>
+        #content-wrapper {
+            max-width: 400px;
+        }
 
+        #content-wrapper form div {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        #content-wrapper input[type="submit"],
+        #content-wrapper a {
+            border: 0;
+            color: black;
+            border-radius: 3px;
+            background: white;
+            padding: 5px;
+            line-height: 1;
+            font-size: 16px;
+            font-weight: normal;
+
+            &:hover {
+                transform: scale(1.1);
+                box-shadow: 0 0 2px 0 #505050;
+            }
+        }
+
+        #content-wrapper a {
+            display: flex;
+            width: fit-content;
+        }
+    </style>
 {% endblock %}
 {% block content %}
     <h1>Delete post</h1>
@@ -9,8 +41,10 @@
         <form action="" method="post">
             {% csrf_token %}
             <p>Are you sure?</p>
-            <input type="submit" value="Delete">
-            <a href="{% url 'post-detail' object.id %}">cancel</a>
+            <div>
+                <input type="submit" value="Delete">
+                <a href="{% url 'post-detail' object.id %}">Cancel</a>
+            </div>
         </form>
         <div class="errors">
             {% for field, error in form.errors.items %}
@@ -20,6 +54,4 @@
             {% endfor %}
         </div>
     </div>
-
-
 {% endblock content %}
