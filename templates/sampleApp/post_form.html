@@ -1,6 +1,7 @@
 {% extends "sampleApp/base.html" %}
 {% load static %}
 {% block head %}
+    <link rel="stylesheet" href="{% static 'styles/post_form.css' %}">
     <style>
         .hidden {
             display: none;
@@ -8,52 +9,65 @@
     </style>
     <script type="text/javascript">
         function delete_attachment(id) {
-            let btn = document.getElementById('attachment-delete-'+id)
+            let btn = document.getElementById('attachment-delete-' + id)
             btn.classList.add("hidden")
-            btn = document.getElementById('attachment-delete-link-'+id)
+            btn = document.getElementById('attachment-delete-link-' + id)
             btn.classList.remove("hidden")
-            btn = document.getElementById('attachment-delete-cancel-'+id)
+            btn = document.getElementById('attachment-delete-cancel-' + id)
             btn.classList.remove("hidden")
         }
 
         function cancel(id) {
-            let btn = document.getElementById('attachment-delete-'+id)
+            let btn = document.getElementById('attachment-delete-' + id)
             btn.classList.remove("hidden")
-            btn = document.getElementById('attachment-delete-link-'+id)
+            btn = document.getElementById('attachment-delete-link-' + id)
             btn.classList.add("hidden")
-            btn = document.getElementById('attachment-delete-cancel-'+id)
+            btn = document.getElementById('attachment-delete-cancel-' + id)
             btn.classList.add("hidden")
         }
     </script>
 {% endblock %}
 {% block content %}
-    <h1>Create post</h1>
-    <div>
+    {% if request.path_info == '/post/new/' %}
+        <h1>Create post</h1>
+    {% else %}
+        <h1>Update post</h1>
+    {% endif %}
+    <div class="form-wrapper">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_div }}
             {{ post_attachment_form.as_div }}
-            <input type="submit" value="Create">
+            {% if request.path_info == '/post/new/' %}
+                <input type="submit" value="Create">
+            {% else %}
+                <input type="submit" value="Update">
+            {% endif %}
         </form>
 
-        <div>
+        <div class="attachments-wrapper">
             {% if attachments %}
-                currently uploaded attachments:
+                <p class="attachments-header">Currently uploaded attachments:</p>
 
                 {% for attachment in attachments %}
-                    <div>
+                    <div class="attachment">
                         <a href="{{ attachment.attachment.url }}" target="_blank">{{ attachment.filename }}</a>
 
-                        <button id="attachment-delete-{{ attachment.id }}" class="" onclick="delete_attachment({{ attachment.id }})">x</button>
+                        <div class="attachment-delete-wrapper">
+                            <button id="attachment-delete-{{ attachment.id }}" class="delete-button"
+                                    onclick="delete_attachment({{ attachment.id }})">x
+                            </button>
 
-                        <a class="attachment-delete hidden" id="attachment-delete-link-{{ attachment.id }}"
-                           href="{% url 'attachment-delete' post.id attachment.id %}">Yes, delete</a>
+                            <button class="delete-cancel-link hidden"
+                                    id="attachment-delete-cancel-{{ attachment.id }}"
+                                    onclick="cancel({{ attachment.id }})">
+                                Cancel
+                            </button>
 
-                        <button class="attachment-delete hidden" id="attachment-delete-cancel-{{ attachment.id }}"
-                                onclick="cancel({{ attachment.id }})">
-                            Cancel
-                        </button>
+                            <a class="delete-link hidden" id="attachment-delete-link-{{ attachment.id }}"
+                               href="{% url 'attachment-delete' post.id attachment.id %}">Yes, delete</a>
 
+                        </div>
                     </div>
                 {% endfor %}
             {% endif %}

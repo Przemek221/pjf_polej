@@ -1,0 +1,89 @@
+#content-wrapper form {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 60% 40%;
+    row-gap: 10px;
+
+    & input, & label {
+        font-size: 16px;
+    }
+
+    & textarea {
+        border-width: 0;
+        border-radius: 4px;
+        background: white;
+        font-size: 14px;
+        width: 90%;
+        height: 300px;
+        resize: vertical;
+    }
+
+    & input[type="submit"] {
+        max-width: 150px;
+        border: 0;
+        border-radius: 3px;
+        background: white;
+        grid-column: 1/3;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+}
+
+#content-wrapper form div {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}
+
+#content-wrapper form div .errorlist {
+    margin: 5px 0;
+    font-size: 13px;
+    list-style-type: none;
+    padding: 0 10px;
+
+    & li {
+        background: #ff000085;
+        text-align: center;
+        border-radius: 4px;
+        padding: 2px;
+        margin: 5px 0;
+    }
+}
+
+#content-wrapper .attachment-delete-wrapper * {
+    border: 0;
+    color: black;
+    border-radius: 3px;
+    background: white;
+    padding: 5px;
+    line-height: 1;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+#content-wrapper .attachments-header {
+    grid-column: 1/3;
+    margin: 0 0 5px;
+    font-size: 16px;
+}
+
+#content-wrapper .attachments-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 15px;
+    row-gap: 5px;
+    background: #ffffff7a;
+    padding: 7px;
+
+    & a {
+        font-size: 14px;
+    }
+}
+
+#content-wrapper .attachment {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
