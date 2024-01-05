@@ -1,128 +1,49 @@
 {% extends "sampleApp/base.html" %}
+{% load static %}
 {% block head %}
-    <style>
-        .post-creator-img,
-        .comment-creator-img {
-            width: auto;
-            max-height: 50px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-
-        .comment {
-            display: grid;
-            grid-auto-flow: column;
-        }
-
-    </style>
-    <script type="text/javascript">
-        function delete_comment(id) {
-            let btn = document.getElementById('comment-delete-' + id)
-            btn.classList.add("hidden")
-            btn = document.getElementById('comment-delete-link-' + id)
-            btn.classList.remove("hidden")
-            btn = document.getElementById('comment-delete-cancel-' + id)
-            btn.classList.remove("hidden")
-        }
-
-        function cancel(id) {
-            let btn = document.getElementById('comment-delete-' + id)
-            btn.classList.remove("hidden")
-            btn = document.getElementById('comment-delete-link-' + id)
-            btn.classList.add("hidden")
-            btn = document.getElementById('comment-delete-cancel-' + id)
-            btn.classList.add("hidden")
-        }
-    </script>
+    <link rel="stylesheet" href="{% static 'styles/post_detail.css' %}">
 {% endblock %}
 {% block content %}
-    <h1>Post details:</h1>
     <div class="post">
-        <h3>
-            Created by:
+        <div class="post-likes-wrapper">
+            <div class="post-likes-counter">{{ object.number_of_likes }}</div>
+            {% include 'sampleApp/like_post.html' %}
+        </div>
+        <div class="post-info-wrapper">
+            <img class="post-creator-img" src="{{ object.creator.userprofile.image.url }}" alt="post_creator_img">
             <a href="{% url 'user-posts' object.creator.username %}" class="post-creator">
                 {{ object.creator }}
             </a>
-        </h3>
-        <img class="post-creator-img" src="{{ object.creator.userprofile.image.url }}" alt="post_creator_img">
-        <p class="post-created-date">Created date: {{ object.createdDate|date:"d M y H:i" }}</p>
+            <p class="post-created-date">{{ object.createdDate|date:"d M y H:i" }}</p>
+        </div>
         <div class="post-content-wrapper">
-            Content:
             <p class="post-content">
                 {{ object.content }}
             </p>
         </div>
-        <div>
-
+        <div class="attachments">
             {% if attachments %}
-                attachments:
                 {% for attachment in attachments %}
-                    <div>
+                    <div class="attachment">
                         {% if attachment.file_type == "image" %}
-                            <a href="{{ attachment.attachment.url }}" target="_blank">
+                            <a href="{{ attachment.attachment.url }}" target="_blank" class="img-attachment-link">
                                 <img src="{{ attachment.attachment.url }}" alt="{{ attachment.filename }}">
                             </a>
                         {% else %}
-                            <a href="{{ attachment.attachment.url }}" target="_blank">see</a>
+                            <div class="file-attachment">
+                                <a href="{{ attachment.attachment.url }}" target="_blank">{{ attachment.filename }}</a>
+                                <a href="{% url 'download' object.id attachment.id %}">
+                                    <img src="{% static 'images/download.png' %}" alt="download" class="download-img">
+                                </a>
+                            </div>
                         {% endif %}
-                        <a href="{% url 'download' object.id attachment.id %}">{{ attachment.filename }}</a>
                     </div>
                 {% endfor %}
             {% endif %}
-
-
         </div>
-        <div class="post-likes-counter">Likes: {{ object.number_of_likes }}</div>
-        {% include 'sampleApp/like_post.html' %}
     </div>
-
-    <div class="comments-wrapper">
-        <h3>comment section</h3>
-        {% for comment in comments %}
-            <div class="comment">
-                <p class="comment-created-date">created: {{ comment.createdDate|date:"d/M/y H:i" }}</p>
-                <p class="">
-                    commenter:
-                    <a href="{% url 'user-posts' comment.creator.username %}" class="comment-creator">
-                        {{ comment.creator.username }}
-                    </a>
-                </p>
-                <img class="comment-creator-img" src="{{ comment.creator.userprofile.image.url }}"
-                     alt="comment_creator_img">
-                <div class="comment-content-wrapper">
-                    Content:
-                    <p class="comment-content">
-                        {{ comment.content }}
-                    </p>
-                </div>
-
-                {% if comment.creator == user %}
-                    <button id="comment-delete-{{ comment.id }}" class="" onclick="delete_comment({{ comment.id }})">
-                        x
-                    </button>
-                    <a class="comment-delete hidden" id="comment-delete-link-{{ comment.id }}"
-                       href="{% url 'comment-delete' object.id comment.id %}">
-                        Yes, delete
-                    </a>
-                    <button class="comment-delete hidden" id="comment-delete-cancel-{{ comment.id }}"
-                            onclick="cancel({{ comment.id }})">
-                        Cancel
-                    </button>
-                {% endif %}
-            </div>
-            <hr>
-        {% endfor %}
-
-    </div>
-    <a href="{% url 'comment' object.id %}">comment</a>
-
-    <a href="{% url 'login' %}">jakis link - login</a>
+    {% include 'sampleApp/comments.html' %}
     {% if object.creator == user %}
-
-        <a href="{% url 'post-delete' object.id %}">post delete</a>
-        <a href="{% url 'post-update' object.id %}">post update</a>
+        {% include 'sampleApp/post_management.html' %}
     {% endif %}
 {% endblock content %}

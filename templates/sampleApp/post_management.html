@@ -1,0 +1,27 @@
+<style>
+    #content-wrapper .post-options-wrapper {
+        display: flex;
+        gap: 10px;
+        position: fixed;
+        top: 30px;
+        left: 30px;
+        margin-bottom: 15px;
+        background: white;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    #content-wrapper .post-options-wrapper a {
+        padding: 5px;
+        border-radius: 3px;
+        box-shadow: 0 0 5px 0 #505050;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+</style>
+<div class="post-options-wrapper">
+    <a href="{% url 'post-delete' object.id %}">Delete post</a>
+    <a href="{% url 'post-update' object.id %}">Update post</a>
+</div>

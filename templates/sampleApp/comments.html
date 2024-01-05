@@ -1,0 +1,171 @@
+<style>
+    .hidden {
+        display: none;
+    }
+
+    #content-wrapper .comments-wrapper .add-comment {
+        display: flex;
+        width: fit-content;
+        font-size: 16px;
+        border: 0;
+        border-radius: 3px;
+        background: white;
+        color: black;
+        padding: 5px;
+        line-height: 1;
+        font-weight: normal;
+        margin: 10px 0;
+
+        &:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 2px 0 #505050;
+        }
+
+    }
+
+    #content-wrapper .comment-delete-wrapper {
+        display: flex;
+        gap: 10px;
+        justify-content: right;
+        font-size: 11px;
+    }
+
+    #content-wrapper .comment-delete-wrapper * {
+        border: 0;
+        color: black;
+        border-radius: 3px;
+        background: white;
+        padding: 5px;
+        line-height: 1;
+        font-size: 11px;
+        font-weight: normal;
+
+        &:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 1px 0 #505050;
+        }
+    }
+
+    #content-wrapper .comments-wrapper {
+
+        & .comment {
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+            margin: 8px 0;
+            box-shadow: 0 0 3px 1px #575757;
+        }
+
+        & .comment-info-wrapper {
+            display: flex;
+            flex-direction: column;
+            margin-right: 5px;
+        }
+
+        & .comment-created-date {
+            font-size: 11px;
+            max-width: 55px;
+        }
+
+        & .comment-creator {
+            color: black;
+            font-size: 16px;
+            font-weight: 700;
+
+            &:hover {
+                color: #737373;
+            }
+        }
+
+        & .comment-creator-img {
+            width: auto;
+            max-height: 40px;
+            max-width: 40px;
+            padding: 5px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 5px 0 #fff;
+        }
+
+        & .comment-info-content {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+        }
+
+        & .comment-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+
+            & .comment-content {
+                padding-left: 15px;
+                margin: 0;
+            }
+        }
+    }
+
+    .comment {
+        display: grid;
+        grid-auto-flow: column;
+    }
+</style>
+
+<script type="text/javascript">
+    function delete_comment(id) {
+        let btn = document.getElementById('comment-delete-' + id)
+        btn.classList.add("hidden")
+        btn = document.getElementById('comment-delete-link-' + id)
+        btn.classList.remove("hidden")
+        btn = document.getElementById('comment-delete-cancel-' + id)
+        btn.classList.remove("hidden")
+    }
+
+    function cancel(id) {
+        let btn = document.getElementById('comment-delete-' + id)
+        btn.classList.remove("hidden")
+        btn = document.getElementById('comment-delete-link-' + id)
+        btn.classList.add("hidden")
+        btn = document.getElementById('comment-delete-cancel-' + id)
+        btn.classList.add("hidden")
+    }
+</script>
+<div class="comments-wrapper">
+    <h2 class="comments-header">Comments:</h2>
+    <a href="{% url 'comment' object.id %}" class="add-comment">Add comment</a>
+    {% for comment in comments %}
+        <div class="comment">
+            <div class="comment-info-content">
+                <div class="comment-info-wrapper">
+                    <img class="comment-creator-img" src="{{ comment.creator.userprofile.image.url }}"
+                         alt="comment_creator_img">
+
+                    <p class="comment-created-date">{{ comment.createdDate|date:"d/M/y H:i" }}</p>
+                </div>
+                <div class="comment-content-wrapper">
+                    <a href="{% url 'user-posts' comment.creator.username %}" class="comment-creator">
+                        {{ comment.creator.username }}
+                    </a>
+                    <p class="comment-content">
+                        {{ comment.content }}
+                    </p>
+                </div>
+            </div>
+            {% if comment.creator == user %}
+                <div class="comment-delete-wrapper">
+                    <button id="comment-delete-{{ comment.id }}" class="" onclick="delete_comment({{ comment.id }})">
+                        Delete
+                    </button>
+                    <a class="comment-delete hidden" id="comment-delete-link-{{ comment.id }}"
+                       href="{% url 'comment-delete' object.id comment.id %}">
+                        Yes, delete
+                    </a>
+                    <button class="comment-delete hidden" id="comment-delete-cancel-{{ comment.id }}"
+                            onclick="cancel({{ comment.id }})">
+                        Cancel
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
