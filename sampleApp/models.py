@@ -1,20 +1,9 @@
 import os.path
 from mimetypes import guess_type
-
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 from django.urls import reverse
-
-
-# Create your models here.
-
-class Something(models.Model):
-    number = models.IntegerField()
-    desc = models.CharField(max_length=30)
-
-    def __str__(self):
-        return f"num: {self.number} | desc: {self.desc}"
 
 
 class UserProfile(models.Model):
@@ -36,7 +25,6 @@ class UserProfile(models.Model):
 class Post(models.Model):
     content = models.TextField()
     createdDate = models.DateTimeField(auto_now_add=True)
-    # reactionCounter = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, default=None, blank=True, related_name='post_like')
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
 

@@ -2,20 +2,13 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect, FileResponse
 from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import (UpdateUserForm, UpdateProfileForm,
-                    CreatePostForm, CreatePostAttachmentForm)
-from .models import Something, Post, Comment, PostAttachment
-
-
-class AllToDos(ListView):
-    model = Something
-    template_name = "sampleApp/index.html"
-
+from .forms import (UpdateUserForm, UpdateProfileForm, CreatePostForm, CreatePostAttachmentForm)
+from .models import Post, Comment, PostAttachment
 
 # argument dla fcji, dla strony index html
 sth = [
@@ -32,15 +25,6 @@ def xxx(request):
     return render(request, 'sampleApp/index.html', arg)
 
 
-def display_posts(request):
-    arg = {
-        'title': 'abc',
-        'posts': Post.objects.all()
-    }
-
-    return render(request, 'sampleApp/home.html', arg)
-
-
 class DisplayPosts(ListView):
     model = Post
     # by default template name is: appName/modelName_viewType
@@ -49,23 +33,8 @@ class DisplayPosts(ListView):
     ordering = ['-createdDate']
     paginate_by = 10
 
-    # def post_is_liked(self, post_id):
-    #     likes_connected = get_object_or_404(Post, id=post_id)
-    #     liked = False
-    #     if likes_connected.likes.filter(id=self.request.user.id).exists():
-    #         liked = True
-    #     return liked
-
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-
-        # likes_connected = get_object_or_404(Post, id=self.kwargs['pk'])
-        # data['post_is_liked'] = {}
-        # for item in Post.objects.all():
-        # for item in data['object_list']:
-        #     data['post_is_liked'].update({f"{item.id}": self.post_is_liked(item.id)})
-        # data['post_is_liked'].append(self.post_is_liked(item.id))
-
         return data
 
 
@@ -83,10 +52,7 @@ class DisplayUsersPosts(ListView):
 
 @login_required
 def post_like(request, pk):
-    # post_id is taken from the form (it's a button value)
-    # post = get_object_or_404(Post, id=request.POST.get('post_id'))
-
-    # int this case it's the post id, so it can be replaced with function argument, which is primary key
+    # in this case it's the post id, so it can be replaced with function 'pk' argument, which is primary key
     post = get_object_or_404(Post, id=pk)
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
@@ -97,12 +63,6 @@ def post_like(request, pk):
         return HttpResponseRedirect(request.POST.get('next'))
     else:
         return redirect('home')
-    # return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
-    # return HttpResponseRedirect(reverse(request.POST.get('next'), args=[str(pk)]))
-
-
-class PostDetails(DetailView):
-    model = Post
 
 
 def post_details(request, pk):
@@ -113,17 +73,6 @@ def post_details(request, pk):
     }
 
     return render(request, 'sampleApp/post_detail.html', arg)
-
-
-class CreatePost(LoginRequiredMixin, CreateView):
-    model = Post
-    fields = ['content']
-
-    def form_valid(self, form):
-        # assigning creator before validation
-        form.instance.creator = self.request.user
-
-        return super().form_valid(form)
 
 
 def download_file(request, pk, attachment_id):
@@ -144,8 +93,6 @@ def create_post(request):
             for file in uploaded_files:
                 temp = PostAttachment(attachment=file, relatedPost=created_post)
                 temp.save()
-                # post_attachment_form.instance.relatedPost = created_post
-                # post_attachment_form.save()
 
             messages.success(request, "Post created")
             return redirect(reverse('post-detail', args=[created_post.id]))
@@ -154,68 +101,25 @@ def create_post(request):
         post_attachment_form = CreatePostAttachmentForm()
 
     arg = {
-        'post_form': post_form,
+        'form': post_form,
         'post_attachment_form': post_attachment_form
     }
-    return render(request, 'sampleApp/post_form_2.html', arg)
+    return render(request, 'sampleApp/post_form.html', arg)
 
 
 class CreateComment(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
 
-    # def get_context_data(self, **kwargs):
     def get_post(self, **kwargs):
-        # data = super().get_context_data(**kwargs)
         post = get_object_or_404(Post, id=self.kwargs['pk'])
         return post
-        # data['relatedPost'] = post
-        # data['post_is_liked'] = {}
-        # for item in Post.objects.all():
-        # for item in data['object_list']:
-        #     data['post_is_liked'].update({f"{item.id}": self.post_is_liked(item.id)})
-        # data['post_is_liked'].append(self.post_is_liked(item.id))
 
     def form_valid(self, form):
         # assigning creator before validation
         form.instance.creator = self.request.user
         form.instance.relatedPost = self.get_post()
         return super().form_valid(form)
-
-
-@login_required
-def update_post(request, pk):
-    old_post = get_object_or_404(Post, id=pk)
-    # old_attachments = get_object_or_404(PostAttachment, relatedPost=old_post)
-    old_attachments = PostAttachment.objects.filter(relatedPost=old_post)
-    if request.method == 'POST':
-        post_form = CreatePostForm(request.POST, instance=old_post)
-        post_attachment_form = CreatePostAttachmentForm(request.POST, request.FILES, instance=old_attachments.first())
-        uploaded_files = request.FILES.getlist('attachment')
-        if post_form.is_valid() and post_attachment_form.is_valid():
-            post_form.instance.creator = request.user
-            created_post = post_form.save()
-
-            for file in uploaded_files:
-                temp = PostAttachment(attachment=file, relatedPost=created_post)
-
-                temp.save()
-                # post_attachment_form.instance.relatedPost = created_post
-                # post_attachment_form.save()
-
-            messages.success(request, "Post updated")
-            return redirect(reverse('post-detail', args=[created_post.id]))
-    else:
-        post_form = CreatePostForm(instance=old_post)
-        post_attachment_form = []
-        for attachment in old_attachments:
-            post_attachment_form.append(CreatePostAttachmentForm(instance=attachment))
-
-    arg = {
-        'post_form': post_form,
-        'post_attachment_form': post_attachment_form
-    }
-    return render(request, 'sampleApp/post_form_2.html', arg)
 
 
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -286,12 +190,6 @@ def attachment_delete(request, pk, attachment_id):
         messages.error(request, "You are not the owner of the post")
 
     return redirect(reverse('post-update', args=[pk]))
-
-
-# def przyklkad(request):
-#     argument = {'klucz': "wartosc"}
-#     # return render(request, 'sampleApp/register.html', argument)
-#     return render(request, 'sampleApp/register.html', {'argument': 'wartosc'})
 
 
 def register_user(request):
