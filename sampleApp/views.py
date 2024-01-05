@@ -10,20 +10,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import (UpdateUserForm, UpdateProfileForm, CreatePostForm, CreatePostAttachmentForm)
 from .models import Post, Comment, PostAttachment
 
-# argument dla fcji, dla strony index html
-sth = [
-    {'number': 5, 'desc': 'sss'},
-    {'number': 1, 'desc': 'ddd'}
-]
-
-
-def xxx(request):
-    arg = {
-        'title': 'abc',
-        'object_list': sth
-    }
-    return render(request, 'sampleApp/index.html', arg)
-
 
 def get_attachments(post_id):
     return PostAttachment.objects.filter(relatedPost=post_id).all()
@@ -178,7 +164,7 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    success_url = '/../home'
+    success_url = '/../'
 
     def test_func(self):
         post = self.get_object()
