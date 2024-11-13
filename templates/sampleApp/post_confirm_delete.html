@@ -4,34 +4,31 @@
     <style>
         #content-wrapper {
             max-width: 400px;
+            overflow: visible;
+            text-align: center;
         }
 
-        #content-wrapper form div {
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
+        h1 {
+            font-size: 25px;
         }
 
-        #content-wrapper input[type="submit"],
-        #content-wrapper a {
-            border: 0;
-            color: black;
-            border-radius: 3px;
-            background: white;
-            padding: 5px;
-            line-height: 1;
-            font-size: 16px;
-            font-weight: normal;
-
-            &:hover {
-                transform: scale(1.1);
-                box-shadow: 0 0 2px 0 #505050;
+        form {
+            & div {
+                justify-content: center;
+                display: flex;
+                flex-direction: row;
+                gap: 20px;
             }
-        }
 
-        #content-wrapper a {
-            display: flex;
-            width: fit-content;
+            & input[type="submit"],
+            & p,
+            & a {
+                font-size: 16px;
+            }
+
+            & input[type="submit"] {
+                background: #ff8aa0;
+            }
         }
     </style>
 {% endblock %}
@@ -42,8 +39,8 @@
             {% csrf_token %}
             <p>Are you sure?</p>
             <div>
-                <input type="submit" value="Delete">
-                <a href="{% url 'post-detail' object.id %}">Cancel</a>
+                <input type="submit" value="Delete" class="button-28">
+                <a href="{% url 'post-detail' object.id %}" class="button-28">Cancel</a>
             </div>
         </form>
         <div class="errors">

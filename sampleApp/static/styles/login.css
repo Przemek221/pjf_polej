@@ -15,13 +15,15 @@
 }
 
 #content-wrapper .register-paragraph {
-    margin-top: 15px;
+    margin: 15px auto;
     font-size: 15px;
+    width: 56%;
 }
 
 #content-wrapper .errors {
-    margin-top: 15px;
+    margin: 15px auto;
     font-size: 13px;
+    width: 60%;
 }
 
 #content-wrapper .form-header {
@@ -44,7 +46,8 @@
 
     & input[type="text"],
     & input[type="password"] {
-        border-width: 0;
+        border: 2px solid #1A1A1A;
+        color: #3B3B3B;
         border-radius: 4px;
         background: white;
         font-size: 16px;
@@ -52,9 +55,8 @@
 
     & input[type="submit"] {
         width: 50%;
-        border: 0;
-        border-radius: 3px;
-        background: white;
+        min-height: 40px;
+        padding: 0;
 
         &:hover {
             transform: scale(1.1);

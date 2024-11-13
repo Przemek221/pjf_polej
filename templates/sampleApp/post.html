@@ -1,0 +1,58 @@
+{% load static %}
+{% if object %}
+    <div class="post post-{{ object.pk }}">
+        <div class="post-interaction-wrapper">
+            <div class="post-likes-wrapper">
+                <div class="post-likes-counter">{{ object.number_of_likes }}</div>
+                {% include 'sampleApp/like_post.html' %}
+            </div>
+            {% if "/post/" not in request.path_info %}
+                <a href="{% url 'post-detail' object.id %}" class="post-details">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                         viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                              d="M3.559 4.544c.355-.35.834-.544 1.33-.544H19.11c.496 0 .975.194 1.33.544.356.35.559.829.559 1.331v9.25c0 .502-.203.981-.559 1.331-.355.35-.834.544-1.33.544H15.5l-2.7 3.6a1 1 0 0 1-1.6 0L8.5 17H4.889c-.496 0-.975-.194-1.33-.544A1.868 1.868 0 0 1 3 15.125v-9.25c0-.502.203-.981.559-1.331ZM7.556 7.5a1 1 0 1 0 0 2h8a1 1 0 0 0 0-2h-8Zm0 3.5a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2H7.556Z"
+                              clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            {% else %}
+                {% if object.creator == user %}
+                    {% include 'sampleApp/post_management.html' %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="post-info-wrapper">
+            <img class="post-creator-img" src="{{ object.creator.userprofile.image.url }}"
+                 alt="post_creator_img">
+            <a href="{% url 'user-posts' object.creator.username %}" class="post-creator">
+                {{ object.creator }}
+            </a>
+            <div class="post-detail-date">
+                <p class="post-created-date">{{ object.createdDate|date:"d M y H:i" }}</p>
+            </div>
+        </div>
+        <div class="post-content-wrapper">
+            <p class="post-content">
+                {{ object.content }}
+            </p>
+        </div>
+        <div class="attachments">
+            {% if attachments %}
+                {% if "/post/" in request.path_info %}
+                    {% for value in attachments %}
+                        {% include 'sampleApp/post_attachment.html' %}
+                    {% endfor %}
+                {% else %}
+                    {% for key, values in attachments.items %}
+                        {% if key == object.id %}
+                            {% for value in values %}
+                                {% include 'sampleApp/post_attachment.html' %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

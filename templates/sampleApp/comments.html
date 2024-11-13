@@ -1,138 +1,26 @@
-<style>
-    .hidden {
-        display: none;
-    }
-
-    #content-wrapper .comments-wrapper .add-comment {
-        display: flex;
-        width: fit-content;
-        font-size: 16px;
-        border: 0;
-        border-radius: 3px;
-        background: white;
-        color: black;
-        padding: 5px;
-        line-height: 1;
-        font-weight: normal;
-        margin: 10px 0;
-
-        &:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 2px 0 #505050;
-        }
-
-    }
-
-    #content-wrapper .comment-delete-wrapper {
-        display: flex;
-        gap: 10px;
-        justify-content: right;
-        font-size: 11px;
-    }
-
-    #content-wrapper .comment-delete-wrapper * {
-        border: 0;
-        color: black;
-        border-radius: 3px;
-        background: white;
-        padding: 5px;
-        line-height: 1;
-        font-size: 11px;
-        font-weight: normal;
-
-        &:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 1px 0 #505050;
-        }
-    }
-
-    #content-wrapper .comments-wrapper {
-
-        & .comment {
-            display: flex;
-            flex-direction: column;
-            padding: 5px;
-            margin: 8px 0;
-            box-shadow: 0 0 3px 1px #575757;
-        }
-
-        & .comment-info-wrapper {
-            display: flex;
-            flex-direction: column;
-            margin-right: 5px;
-        }
-
-        & .comment-created-date {
-            font-size: 11px;
-            max-width: 55px;
-        }
-
-        & .comment-creator {
-            color: black;
-            font-size: 16px;
-            font-weight: 700;
-
-            &:hover {
-                color: #737373;
-            }
-        }
-
-        & .comment-creator-img {
-            width: auto;
-            max-height: 40px;
-            max-width: 40px;
-            padding: 5px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 5px 0 #fff;
-        }
-
-        & .comment-info-content {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-        }
-
-        & .comment-content-wrapper {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-
-            & .comment-content {
-                padding-left: 15px;
-                margin: 0;
-            }
-        }
-    }
-
-    .comment {
-        display: grid;
-        grid-auto-flow: column;
-    }
-</style>
-
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles/comments.css' %}">
 <script type="text/javascript">
-    function delete_comment(id) {
-        let btn = document.getElementById('comment-delete-' + id)
-        btn.classList.add("hidden")
-        btn = document.getElementById('comment-delete-link-' + id)
-        btn.classList.remove("hidden")
-        btn = document.getElementById('comment-delete-cancel-' + id)
-        btn.classList.remove("hidden")
-    }
+    const toggleModal = (commentId) => {
+        let modal = document.getElementById("modal-" + commentId.toString());
+        modal.style.display = modal.style.display === "block" ? "none" : "block";
 
-    function cancel(id) {
-        let btn = document.getElementById('comment-delete-' + id)
-        btn.classList.remove("hidden")
-        btn = document.getElementById('comment-delete-link-' + id)
-        btn.classList.add("hidden")
-        btn = document.getElementById('comment-delete-cancel-' + id)
-        btn.classList.add("hidden")
+        window.onclick = function (event) { //handle clicking outside the modal
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
     }
 </script>
 <div class="comments-wrapper">
     <h2 class="comments-header">Comments:</h2>
-    <a href="{% url 'comment' object.id %}" class="add-comment">Add comment</a>
+    <a href="{% url 'comment' object.id %}" class="add-comment">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+             width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+        </svg>
+    </a>
     {% for comment in comments %}
         <div class="comment">
             <div class="comment-info-content">
@@ -153,17 +41,26 @@
             </div>
             {% if comment.creator == user %}
                 <div class="comment-delete-wrapper">
-                    <button id="comment-delete-{{ comment.id }}" class="" onclick="delete_comment({{ comment.id }})">
-                        Delete
+                    <button id="comment-delete-{{ comment.id }}" onclick="toggleModal({{ comment.id }})">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"></path>
+                        </svg>
                     </button>
-                    <a class="comment-delete hidden" id="comment-delete-link-{{ comment.id }}"
-                       href="{% url 'comment-delete' object.id comment.id %}">
-                        Yes, delete
-                    </a>
-                    <button class="comment-delete hidden" id="comment-delete-cancel-{{ comment.id }}"
-                            onclick="cancel({{ comment.id }})">
-                        Cancel
-                    </button>
+                </div>
+                <div id="modal-{{ comment.id }}" class="comment-delete-modal">
+                    <div>
+                        <p>Are you sure?</p>
+                        <div class="comment-delete-modal-buttons">
+                            <a class="comment-delete" href="{% url 'comment-delete' object.id comment.id %}">
+                                Delete
+                            </a>
+                            <button class="comment-delete-cancel" onclick="toggleModal({{ comment.id }})">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
                 </div>
             {% endif %}
         </div>

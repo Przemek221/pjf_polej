@@ -1,0 +1,19 @@
+{% load static %}
+
+<div class="attachment">
+    {% if value.file_type == "image" %}
+        <a href="{{ value.attachment.url }}" target="_blank"
+           class="img-attachment-link">
+            <img src="{{ value.attachment.url }}" alt="{{ value.filename }}">
+        </a>
+    {% else %}
+        <div class="file-attachment">
+            <a href="{{ value.attachment.url }}"
+               target="_blank">{{ value.filename }}</a>
+            <a href="{% url 'download' object.id value.id %}">
+                <img src="{% static 'images/download.png' %}" alt="download"
+                     class="download-img">
+            </a>
+        </div>
+    {% endif %}
+</div>
