@@ -209,6 +209,7 @@ def register_user(request):
 
 @login_required
 def profile(request):
+    form_display = "none"
     if request.method == 'POST':
         update_user_form = UpdateUserForm(request.POST, instance=request.user)
         update_profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
@@ -216,7 +217,10 @@ def profile(request):
             update_user_form.save()
             update_profile_form.save()
             messages.success(request, f"Profile updated")
+            form_display = "none"
             return redirect('profile')
+        else:
+            form_display = "block"
 
     else:
         update_user_form = UpdateUserForm(instance=request.user)
@@ -224,6 +228,7 @@ def profile(request):
 
     arg = {
         'update_user_form': update_user_form,
-        'update_profile_form': update_profile_form
+        'update_profile_form': update_profile_form,
+        'form_display': form_display
     }
     return render(request, 'sampleApp/profile.html', arg)

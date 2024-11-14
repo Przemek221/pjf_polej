@@ -9,7 +9,7 @@
         <form action="" method="post">
             {% csrf_token %}
             {{ form.as_div }}
-            <input type="submit" value="Register">
+            <input type="submit" value="Register" class="button-28">
         </form>
         <div class="errors">
             {% for field, error in form.errors.items %}

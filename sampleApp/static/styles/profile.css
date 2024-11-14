@@ -1,84 +1,151 @@
 #content-wrapper {
-    display: grid;
-    grid-template-columns: 60% 40%;
+    overflow: unset;
+    position: relative;
+    margin-top: 170px;
+}
 
-    & .user-info-wrapper {
-        margin-right: 20px;
+.user-info-wrapper {
+    max-width: 400px;
+    margin: auto;
+
+    & .user-info-header {
+        text-align: center;
+    }
+
+    & .profile-picture {
+        max-width: 300px;
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 0 5px 0 #000;
+    }
+
+    & .user-info {
+        display: flex;
+        flex-direction: row;
+        column-gap: 10px;
+        margin: 20px 0;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        & p {
+            margin: 0;
+            font-weight: 600;
+        }
     }
 }
 
-#content-wrapper .user-info-wrapper .profile-picture {
-    margin: 15px 0;
-    max-width: 300px;
-    padding: 10px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 5px 0 #fff;
+.logout-button {
+    display: block;
+    max-width: 110px;
+    margin: auto;
 }
 
-#content-wrapper .user-info-wrapper .user-info {
-    display: flex;
-    flex-direction: row;
-    column-gap: 10px;
-    margin: 20px 0;
+.profile-edit-button {
+    width: 35px;
+    display: block;
+    margin: 30px auto 15px;
+    height: auto;
+    cursor: pointer;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
 
-    &:last-child {
-        flex-direction: column;
-    }
-
-    & p {
-        margin: 0;
-        background: white;
-        padding: 2px;
-        box-shadow: 0 0 5px 0 #fff;
+    &:hover {
+        transform: scale(1.1);
     }
 }
 
-#content-wrapper form {
+form {
     width: 100%;
-    display: grid;
-    grid-auto-flow: row;
+    display: flex;
+    flex-direction: column;
     row-gap: 10px;
+
+    & .helptext {
+        font-size: 12px;
+    }
+
+    & .errorlist {
+        margin: 5px 0;
+        font-size: 13px;
+        list-style-type: none;
+        padding: 0;
+
+        & li {
+            background: #ff000085;
+            text-align: center;
+            border-radius: 4px;
+            padding: 2px;
+            margin: 5px 0;
+        }
+    }
 
     & input, & label {
         font-size: 16px;
     }
 
+    & input[type="file"] {
+        width: 100%;
+    }
+
     & input[type="text"],
     & input[type="email"] {
-        border-width: 0;
         border-radius: 4px;
-        background: white;
+        border: 2px solid black;
         font-size: 16px;
+        display: flex;
+        width: 80%;
     }
 
     & input[type="submit"] {
         max-width: 150px;
-        border: 0;
-        border-radius: 3px;
-        background: white;
-
-        &:hover {
-            transform: scale(1.1);
-        }
+        padding: 2%;
+        min-height: 45px;
     }
 }
 
-#content-wrapper form div .helptext {
-    font-size: 12px;
-}
 
-#content-wrapper form div .errorlist {
-    margin: 5px 0;
-    font-size: 13px;
-    list-style-type: none;
-    padding: 0 10px;
+#form-wrapper {
+    /* Modal styles */
+    display: none;
+    position: fixed;
+    z-index: 10;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
 
-    & li {
-        background: #ff000085;
-        text-align: center;
-        border-radius: 4px;
-        padding: 2px;
-        margin: 5px 0;
+    & > div {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 400px;
+        border-radius: 10px;
+        position: relative;
+
+        & svg {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+
+        & p {
+            margin-top: 0;
+            margin-bottom: 5%;
+            text-align: center;
+            font-size: 18px;
+            @media screen and (max-width: 480px) {
+                font-size: 3.75vw;
+            }
+        }
     }
 }

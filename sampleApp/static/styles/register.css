@@ -6,6 +6,7 @@
 #content-wrapper > div {
     display: grid;
     grid-template-columns: 60% 40%;
+    gap: 10px;
 }
 
 #content-wrapper .error-element {
@@ -68,7 +69,7 @@
 
     & input[type="text"],
     & input[type="password"] {
-        border-width: 0;
+        border: 2px solid #1A1A1A;
         border-radius: 4px;
         background: white;
         font-size: 16px;
@@ -76,13 +77,32 @@
 
     & input[type="submit"] {
         max-width: 150px;
-        border: 0;
-        border-radius: 3px;
-        background: white;
-
-        &:hover {
-            transform: scale(1.1);
-        }
+        min-height: 40px;
+        padding: 0;
     }
 }
 
+@media screen and (max-width: 768px) {
+    #content-wrapper {
+        & > div {
+            grid-template-columns: 1fr;
+
+            & form {
+                max-width: 400px;
+                margin: auto;
+            }
+
+            & .errors {
+                max-width: 400px;
+                margin: auto;
+                width: 100%;
+            }
+        }
+
+        & .register-paragraph {
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+}
