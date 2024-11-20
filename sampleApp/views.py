@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LogoutView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect, FileResponse
 from django.urls import reverse
@@ -31,7 +32,12 @@ class DisplayPosts(ListView):
             data['attachments'].update({item.id: attachments})
         return data
 
+class MyLogoutView(LogoutView):
+    """make logout available via GET"""
+    http_method_names = ["get", "post", "options"]
 
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 class DisplayUsersPosts(ListView):
     model = Post
     # by default template name is: appName/modelName_viewType

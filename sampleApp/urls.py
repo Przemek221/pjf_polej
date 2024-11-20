@@ -19,6 +19,6 @@ urlpatterns = [
     path('post/<int:pk>/delete/', views.PostDelete.as_view(), name='post-delete'),
     path('user/<str:username>/', views.DisplayUsersPosts.as_view(), name='user-posts'),
     path('login/', auth_views.LoginView.as_view(template_name="sampleApp/login.html"), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name="sampleApp/logout.html"), name='logout'),
+    path('logout/', views.MyLogoutView.as_view(template_name="sampleApp/logout.html"), name='logout'),
     path('register/', views.register_user, name='register')
 ]
